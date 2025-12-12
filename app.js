@@ -260,6 +260,40 @@ function throttle(fn, ms=100){
   };
 }
 
+
+/* --- Transpose logic (supports # and b) --- */
+const CHORDS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT_MAP = {'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#'};
+function transposeChordSingle(chordText, steps){
+  if(!chordText) return '';
+  // handle slash chords
+  if(chordText.includes('/')){
+    const parts = chordText.split('/');
+    return transposeChordSingle(parts[0], steps) + '/' + transposeChordSingle(parts[1], steps);
+  }
+  const m = chordText.match(/^([A-G])([b#]?)(.*)$/);
+  if(!m) return chordText;
+  let [, root, accidental, suffix] = m;
+  let full = root + (accidental || '');
+  if(FLAT_MAP[full]) full = FLAT_MAP[full];
+  let idx = CHORDS.indexOf(full);
+  if(idx === -1) return chordText;
+  let newIdx = (idx + steps) % 12;
+  if(newIdx < 0) newIdx += 12;
+  let newRoot = CHORDS[newIdx];
+  return newRoot + (suffix || '');
+}
+function transposeChordText(txt, steps){
+  if(!txt) return '';
+  // split by spaces and transpose individual tokens if they look like chords
+  return txt.split(/\s+/).map(tok => {
+    // simple heuristic: token starts with A-G
+    if(/^[A-G]/.test(tok)) return transposeChordSingle(tok, steps);
+    return tok;
+  }).join(' ');
+}
+
+
 /* Viewer page logic (if on viewer.html) */
 if(location.pathname.endsWith('viewer.html') || document.getElementById('song-view')){
   (async function(){
@@ -273,16 +307,22 @@ if(location.pathname.endsWith('viewer.html') || document.getElementById('song-vi
     if(titleEl) titleEl.textContent = song.title + (song.key?` [${song.key}]`:'');
     // render lines
     viewEl.innerHTML = '';
-    (song.lines||[]).forEach(line=>{
+    (song.lines||[]).forEach(line=>{ const ln = document.createElement('div'); ln.className='lyric-line';
       const ln = document.createElement('div'); ln.className='lyric-line';
+      // chords array (transpose applied)
       if(line.chords && line.chords.length){
-        const cr = document.createElement('div'); cr.className='chords-row'; cr.textContent = (line.chords||[]).join(' ');
+        const cr = document.createElement('div'); cr.className='chords-row';
+        const transposed = (line.chords||[]).map(c=>transposeChordSingle(c, transpose)).join(' ');
+        cr.textContent = transposed;
         ln.appendChild(cr);
       }
+      // chordLine string
       if(line.chordLine){
-        const cr = document.createElement('div'); cr.className='chords-row'; cr.textContent = line.chordLine;
+        const cr = document.createElement('div'); cr.className='chords-row';
+        cr.textContent = transposeChordText(line.chordLine, transpose);
         ln.appendChild(cr);
       }
+      // lyrics
       if(line.lyrics && line.lyrics.length){
         const lr = document.createElement('div'); lr.className='lyrics-row'; lr.textContent = (line.lyrics||[]).join(' ');
         ln.appendChild(lr);
@@ -297,5 +337,26 @@ if(location.pathname.endsWith('viewer.html') || document.getElementById('song-vi
     function renderTranspose(){ /* placeholder: transpose not implemented in this build */ }
     if(up) up.addEventListener('click', ()=>{ transpose++; renderTranspose(); });
     if(down) down.addEventListener('click', ()=>{ transpose--; renderTranspose(); });
+
+    function renderTranspose(){
+      // re-render viewEl with transposed chords
+      viewEl.innerHTML = '';
+      (song.lines||[]).forEach(line=>{
+        const ln = document.createElement('div'); ln.className='lyric-line';
+        if(line.chords && line.chords.length){
+          const cr = document.createElement('div'); cr.className='chords-row';
+          const transposed = (line.chords||[]).map(c=>transposeChordSingle(c, transpose)).join(' ');
+          cr.textContent = transposed; ln.appendChild(cr);
+        }
+        if(line.chordLine){
+          const cr = document.createElement('div'); cr.className='chords-row'; cr.textContent = transposeChordText(line.chordLine, transpose); ln.appendChild(cr);
+        }
+        if(line.lyrics && line.lyrics.length){
+          const lr = document.createElement('div'); lr.className='lyrics-row'; lr.textContent = (line.lyrics||[]).join(' '); ln.appendChild(lr);
+        }
+        viewEl.appendChild(ln);
+      });
+    }
+
   })();
 }
