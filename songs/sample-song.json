@@ -1,0 +1,36 @@
+{
+  "title": "Sample Song (English)",
+  "artist": "Abhi Artist",
+  "key": "C",
+  "lines": [
+    {
+      "chords": [
+        "C",
+        "G",
+        "Am",
+        "F"
+      ],
+      "lyrics": [
+        "This",
+        "is",
+        "a",
+        "sample",
+        "line"
+      ]
+    },
+    {
+      "chords": [
+        "F",
+        "G",
+        "C",
+        "C"
+      ],
+      "lyrics": [
+        "Simple",
+        "lyrics",
+        "for",
+        "demo"
+      ]
+    }
+  ]
+}

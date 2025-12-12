@@ -1,20 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Worship SPOT</title>
-<link rel="stylesheet" href="styles.css" />
-<script defer src="app.js"></script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="header">Worship SPOT</header>
-<main id="app"></main>
-<script>
-window.addEventListener("load", ()=>{
-  const h = document.documentElement.scrollHeight;
-  parent.postMessage({height:h}, "*");
-});
-</script>
+<header class="topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="left">
+      <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+      <a class="logo" href="#">Worship <strong>SPOT</strong></a>
+    </div>
+
+    <div class="center">
+      <div class="search-wrap" id="search-wrap">
+        <input id="search-input" class="search-input" type="search" placeholder="Search songs, artists, tags — / to focus" aria-label="Search songs">
+      </div>
+    </div>
+
+    <div class="right">
+      <select id="ui-locale" class="locale-select" aria-label="Interface language">
+        <option value="en">EN</option>
+        <option value="hi">हिं</option>
+        <option value="gu">ગુ</option>
+      </select>
+
+      <button id="theme-toggle" class="small-btn" title="Toggle theme">⛅</button>
+    </div>
+  </div>
+
+  <!-- mobile sliding panel -->
+  <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+    <div class="mobile-controls">
+      <div class="mobile-row">
+        <input id="mobile-search" type="search" placeholder="Search songs..." />
+      </div>
+      <div class="mobile-row">
+        <div class="lang-filters">
+          <button class="lang-filter active" data-lang="all">All</button>
+          <button class="lang-filter" data-lang="en">English</button>
+          <button class="lang-filter" data-lang="hi">हिन्दी</button>
+          <button class="lang-filter" data-lang="gu">ગુજરાતી</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="main">
+  <section class="panel">
+    <div class="panel-head">
+      <h1 class="page-title">Songs</h1>
+      <p class="muted" id="panel-desc">Click a song to open the viewer (transpose available).</p>
+    </div>
+
+    <ul id="song-list" class="song-grid" aria-live="polite">
+      <!-- cards injected here -->
+    </ul>
+
+    <div id="loading" class="loading">Loading…</div>
+  </section>
+</main>
+
+<footer class="footer">
+  <small>© 2025 Worship SPOT — Press <kbd>/</kbd> to focus search</small>
+</footer>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>

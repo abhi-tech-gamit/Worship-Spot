@@ -1,3 +1,11 @@
 {
-  "title": "\u0ab5\u0ab0\u0acd\u0ab6\u0abf\u0aaa SPOT"
+  "title": "વર્શિપ SPOT",
+  "subtitle": "ગીતો અને કોરડ શોધો — એક ગીત પસંદ કરો",
+  "songs_heading": "ગીતો",
+  "songs_desc": "પ્રેક્ષક ખોલવા માટે ગીત પર ક્લિક કરો (Transpose ઉપલબ્ધ).",
+  "loading": "ગીતો લોડ થઈ રહ્યાં છે…",
+  "no_match": "તમારી શોધ માટે કોઈ ગીત મળ્યું નથી.",
+  "dark_mode": "ડાર્ક મોડ",
+  "light_mode": "લાઇટ મોડ",
+  "press_slash": "શોધ માટે ફોકસ કરવા / દબાવો"
 }

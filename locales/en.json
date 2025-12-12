@@ -1,3 +1,11 @@
 {
-  "title": "Worship SPOT"
+  "title": "Worship SPOT",
+  "subtitle": "Find chords & lyrics — select a song to view",
+  "songs_heading": "Songs",
+  "songs_desc": "Click a song to open the viewer (transpose available).",
+  "loading": "Loading songs…",
+  "no_match": "No songs match your search.",
+  "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode",
+  "press_slash": "Press / to focus search"
 }
