@@ -1,5 +1,7 @@
 // app.js (ES module)
 const BATCH = 20; // infinite scroll batch
+const FILTER_LANG_KEY = 'worship_filter_lang';
+const THEME_KEY = 'worship_theme';
 
 // helper fetch with fallback
 async function fetchJSON(path){
@@ -23,13 +25,11 @@ async function fetchJSON(path){
 }
 
 /* THEME */
-const THEME_KEY = 'worship_theme';
 function applyThemeFromPref(){
   const saved = localStorage.getItem(THEME_KEY);
   if(saved === 'light') document.documentElement.classList.remove('dark');
   else if(saved === 'dark') document.documentElement.classList.add('dark');
   else {
-    // follow system
     const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if(dark) document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
@@ -67,6 +67,9 @@ document.addEventListener('DOMContentLoaded', async ()=> {
   const songs = await fetchJSON('songs.json').catch(()=>[]);
   window.__ALL_SONGS = Array.isArray(songs)?songs:[];
   initList(window.__ALL_SONGS);
+
+  // wire language filters after DOM ready
+  wireLanguageFilters();
 });
 
 /* SEARCH / FILTER / INFINITE SCROLL */
@@ -89,16 +92,6 @@ function initList(allSongs){
     }, 220));
   });
 
-  // wire language buttons
-  const langBtns = Array.from(document.querySelectorAll('.lang-filter'));
-  langBtns.forEach(b=>{
-    b.addEventListener('click', (e)=>{
-      langBtns.forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      applyFilters();
-    });
-  });
-
   // infinite scroll
   window.addEventListener('scroll', throttle(()=>{
     const bottom = document.documentElement.scrollHeight - (window.innerHeight + window.scrollY);
@@ -119,13 +112,18 @@ function initList(allSongs){
 }
 
 function applyFilters(){
+  // get selected language from storage (fallback to DOM)
+  let selectedLang = localStorage.getItem(FILTER_LANG_KEY);
+  if(!selectedLang){
+    const activeBtn = document.querySelector('.lang-filter.active');
+    selectedLang = activeBtn ? activeBtn.dataset.lang : 'all';
+  }
+
   // base list from window.__ALL_SONGS
   let items = window.__ALL_SONGS.slice();
 
   // language filter
-  const activeLangBtn = document.querySelector('.lang-filter.active');
-  const lang = activeLangBtn ? activeLangBtn.dataset.lang : 'all';
-  if(lang && lang !== 'all') items = items.filter(s => (s.language||'en') === lang);
+  if(selectedLang && selectedLang !== 'all') items = items.filter(s => (s.language||'en') === selectedLang);
 
   // search query
   const q = (document.getElementById('search-input')?.value || document.getElementById('mobile-search')?.value || '').trim().toLowerCase();
@@ -203,6 +201,49 @@ function renderCard(song){
   li.appendChild(badges);
   li.appendChild(actions);
   return li;
+}
+
+/* unified language filter wiring (works for desktop and mobile buttons) */
+function wireLanguageFilters() {
+  const langBtns = Array.from(document.querySelectorAll('.lang-filter'));
+  if (!langBtns.length) return;
+
+  let selectedLang = localStorage.getItem(FILTER_LANG_KEY) || 'all';
+
+  function setActiveLang(lang) {
+    selectedLang = lang;
+    localStorage.setItem(FILTER_LANG_KEY, selectedLang);
+    langBtns.forEach(btn => {
+      if (btn.dataset && btn.dataset.lang === lang) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+    applyFilters();
+  }
+
+  // initialize active state from storage
+  let match = langBtns.find(b => b.dataset && b.dataset.lang === selectedLang);
+  if (!match) {
+    const first = langBtns[0];
+    selectedLang = first && first.dataset && first.dataset.lang ? first.dataset.lang : 'all';
+    localStorage.setItem(FILTER_LANG_KEY, selectedLang);
+  }
+  langBtns.forEach(btn => {
+    if (btn.dataset && btn.dataset.lang === selectedLang) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const lang = btn.dataset.lang || 'all';
+      setActiveLang(lang);
+      const mobilePanel = document.getElementById('mobile-panel');
+      const hamburger = document.getElementById('hamburger');
+      if (mobilePanel && mobilePanel.classList.contains('open')) {
+        mobilePanel.classList.remove('open');
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
 }
 
 /* small utils */
