@@ -1,3 +1,8 @@
+/* styles.css — Worship SPOT (full file)
+   Option C: keep all features + upgrade viewer UI and lyric alignment
+*/
+
+/* Core variables */
 :root{
   --bg:#ffffff;
   --surface:#ffffff;
@@ -17,26 +22,39 @@
   --muted:#9fb0d1;
   --card-shadow: 0 8px 34px rgba(0,0,0,0.55);
 }
+
+/* Reset / base */
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;font-size:var(--base-font);}
-.topbar{ position:sticky; top:0; z-index:60; backdrop-filter: blur(6px); background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3)); border-bottom: 1px solid rgba(11,17,32,0.04); }
-:root.dark .topbar{ background: linear-gradient(180deg, rgba(3,6,12,0.6), rgba(3,6,12,0.45)); }
+a{color:inherit;text-decoration:none}
+
+/* Topbar / header */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));
+  border-bottom: 1px solid rgba(11,17,32,0.04);
+}
+:root.dark .topbar{ background: linear-gradient(180deg, rgba(3,6,12,0.6), rgba(3,6,12,0.45)); border-bottom: 1px solid rgba(255,255,255,0.04); }
+
 .topbar-inner{height:var(--header-h);display:flex;align-items:center;gap:12px;max-width:1200px;margin:0 auto;padding:0 16px;justify-content:space-between}
 .left{display:flex;align-items:center;gap:12px}
 .logo{font-weight:600;font-size:1rem;color:var(--text)}
 .logo strong{font-weight:800}
 .hamburger{display:none;background:transparent;border:0;font-size:20px;padding:8px;border-radius:8px;cursor:pointer}
 @media (max-width:800px){ .hamburger{display:block} .center{display:none} }
+
 .center{flex:1;display:flex;justify-content:center}
 .search-wrap{width:60%;max-width:720px;transition:width .2s ease}
 .search-input{width:100%;padding:10px 14px;border-radius:999px;border:1px solid rgba(11,17,32,0.06);outline:none;font-size:0.95rem;background:transparent;color:var(--text);box-shadow:var(--card-shadow)}
 .search-input:focus{box-shadow:0 8px 30px rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.15)}
+
 .right{display:flex;align-items:center;gap:8px}
 .locale-select{padding:8px;border-radius:8px;border:1px solid rgba(11,17,32,0.06);background:transparent;color:var(--text)}
 .small-btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent3));color:white;cursor:pointer;font-weight:700}
 @media (max-width:480px){ .locale-select{display:none} }
 
-/* desktop language filters */
+/* Desktop language filters */
 .lang-filters-desktop { display:flex; gap:8px; align-items:center; margin-right:8px; }
 .lang-filters-desktop .lang-filter {
   padding:8px 10px;
@@ -72,6 +90,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-famil
 @media (min-width:880px){ .song-grid{grid-template-columns:repeat(3,1fr)} }
 @media (min-width:1400px){ .song-grid{grid-template-columns:repeat(4,1fr)} }
 
+/* card */
 .card{
   background:var(--surface);
   border-radius:12px;padding:18px;border:1px solid rgba(11,17,32,0.04);
@@ -100,16 +119,83 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-famil
 /* loading */
 .loading{text-align:center;color:var(--muted);padding:18px;margin:12px 0}
 
-/* viewer */
-.viewer-header{height:56px;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid rgba(11,17,32,0.04);background:transparent;justify-content:center}
+/* =========================================================
+   VIEWER / LYRICS STYLES (UPDATED: centered, larger fonts)
+   ========================================================= */
+
+/* viewer header */
+.viewer-header{height:56px;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid rgba(11,17,32,0.04);background:transparent;position:relative}
 .back{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;border:1px solid transparent}
-.viewer-title{font-weight:800;margin-left:6px;font-size:1.25rem;text-align:center}
-.viewer-controls{position:absolute;right:16px;top:8px}
-.song-view{max-width:900px;margin:24px auto;padding:0 16px}
-.lyric-line{margin-bottom:10px}
-.chords-row{color:#69d7ff;font-weight:700;letter-spacing:1px;margin-bottom:6px;text-align:center}
-.lyrics-row{font-size:1.05rem;line-height:1.5;text-align:center}
+.viewer-title{font-weight:800;margin:0 auto;font-size:1.28rem;text-align:center}
+.viewer-controls{position:absolute;right:16px;top:8px;display:flex;gap:8px}
+
+/* song view container */
+.song-view{max-width:980px;margin:26px auto;padding:0 16px}
+
+/* each lyric line container (centered) */
+.lyric-line {
+  width: 100%;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* wrapper for word-chord pairs */
+.lyric-pairs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+}
+
+/* single pair: chord above the word */
+.lyric-pair {
+  display: grid;
+  grid-template-rows: auto auto;
+  text-align: center;
+  min-width: 40px;
+}
+
+/* chord */
+.chord {
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #7ad7ff;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+/* lyric word */
+.word {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  white-space: nowrap;
+  color: var(--text);
+  text-align: center;
+}
+
+/* fallback chord block (if line has a full chordLine string) */
+.chord-block {
+  display:block;
+  text-align:center;
+  font-family: 'Fira Mono', monospace;
+  margin-bottom:8px;
+  font-size:1.05rem;
+  color: #7ad7ff;
+}
+
+/* fallback lyrics row */
+.lyrics-row {
+  font-size:1.12rem;
+  line-height:1.6;
+  text-align:center;
+  color:var(--text);
+}
 
 /* footer */
 .footer{max-width:1200px;margin:28px auto;padding:0 16px;color:var(--muted);text-align:center}
+
+/* small helpers */
 kbd{background:rgba(0,0,0,0.08);padding:2px 6px;border-radius:6px}

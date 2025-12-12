@@ -1,14 +1,20 @@
-// app.js final corrected
+// app.js — Worship SPOT (full file)
+// Option C: keep all existing features + upgraded viewer UI with precise chord alignment
+
 const BATCH = 20;
 const FILTER_LANG_KEY = 'worship_filter_lang';
 const THEME_KEY = 'worship_theme';
 
+/* ---------------------------
+   Utility: robust fetchJSON
+   --------------------------- */
 async function fetchJSON(path){
   try {
     const res = await fetch(path);
     if(res.ok) return await res.json();
     throw new Error('fetch failed');
   } catch(e){
+    // XHR fallback for file:// environments
     return new Promise((resolve,reject)=>{
       try{
         const xhr = new XMLHttpRequest();
@@ -17,8 +23,8 @@ async function fetchJSON(path){
         xhr.onreadystatechange = ()=> {
           if(xhr.readyState===4){
             if(xhr.status===200||xhr.status===0) {
-              resolve(JSON.parse(xhr.responseText));
-            } else reject(xhr.status);
+              try { resolve(JSON.parse(xhr.responseText)); } catch(err){ reject(err); }
+            } else reject(new Error('XHR status ' + xhr.status));
           }
         };
         xhr.send();
@@ -27,7 +33,9 @@ async function fetchJSON(path){
   }
 }
 
-/* theme */
+/* ---------------------------
+   Theme handling
+   --------------------------- */
 function applyThemeFromPref(){
   const saved = localStorage.getItem(THEME_KEY);
   if(saved === 'light') document.documentElement.classList.remove('dark');
@@ -39,6 +47,7 @@ function applyThemeFromPref(){
   }
   updateThemeButton();
 }
+
 function toggleTheme(){
   if(document.documentElement.classList.contains('dark')){
     document.documentElement.classList.remove('dark');
@@ -49,6 +58,7 @@ function toggleTheme(){
   }
   updateThemeButton();
 }
+
 function updateThemeButton(){
   const btn = document.getElementById('theme-toggle');
   if(!btn) return;
@@ -56,9 +66,12 @@ function updateThemeButton(){
   btn.textContent = isDark ? '🌙' : '☀️';
 }
 
-/* transpose */
+/* ---------------------------
+   Transpose helpers
+   --------------------------- */
 const CHORDS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_MAP = {'Db':'C#','Eb':'D#','Gb':'F#','Ab':'G#','Bb':'A#'};
+
 function transposeChordSingle(chordText, steps){
   if(!chordText) return '';
   if(chordText.includes('/')){
@@ -78,9 +91,12 @@ function transposeChordSingle(chordText, steps){
   return newRoot + (suffix || '');
 }
 
-/* init */
+/* ---------------------------
+   DOM ready: boot
+   --------------------------- */
 document.addEventListener('DOMContentLoaded', async ()=>{
   applyThemeFromPref();
+
   const themeBtn = document.getElementById('theme-toggle');
   if(themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
@@ -101,7 +117,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   wireLanguageFilters();
 });
 
-/* list + filters */
+/* ---------------------------
+   Search / Filter / Infinite Scroll
+   --------------------------- */
 let indexList = [];
 let offset = 0;
 let isLoading = false;
@@ -186,66 +204,151 @@ function renderCard(song){
   return li;
 }
 
-/* language filters */
-function wireLanguageFilters(){
+/* ---------------------------
+   Language filters (desktop + mobile unified)
+   --------------------------- */
+function wireLanguageFilters() {
   const langBtns = Array.from(document.querySelectorAll('.lang-filter'));
-  if(!langBtns.length) return;
+  if (!langBtns.length) return;
   let selectedLang = localStorage.getItem(FILTER_LANG_KEY) || 'all';
-  function setActive(lang){
-    selectedLang = lang; localStorage.setItem(FILTER_LANG_KEY, selectedLang);
-    langBtns.forEach(b=> b.dataset.lang === lang ? b.classList.add('active') : b.classList.remove('active'));
-    applyFilters();
+
+  function setActive(lang) {
+    selectedLang = lang;
+    localStorage.setItem(FILTER_LANG_KEY, selectedLang);
+    langBtns.forEach(btn => {
+      if (btn.dataset && btn.dataset.lang === lang) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
   }
-  let match = langBtns.find(b=> b.dataset.lang === selectedLang);
-  if(!match){ selectedLang = 'all'; localStorage.setItem(FILTER_LANG_KEY, 'all'); }
-  langBtns.forEach(b=> b.dataset.lang === selectedLang ? b.classList.add('active') : b.classList.remove('active'));
-  langBtns.forEach(b=> b.addEventListener('click', ()=>{ setActive(b.dataset.lang || 'all'); const mobilePanel = document.getElementById('mobile-panel'); const hamburger = document.getElementById('hamburger'); if(mobilePanel && mobilePanel.classList.contains('open')){ mobilePanel.classList.remove('open'); if(hamburger) hamburger.setAttribute('aria-expanded','false'); } }));
+
+  // initialize visual state
+  let match = langBtns.find(b => b.dataset && b.dataset.lang === selectedLang);
+  if (!match) {
+    const first = langBtns[0];
+    selectedLang = first && first.dataset && first.dataset.lang ? first.dataset.lang : 'all';
+    localStorage.setItem(FILTER_LANG_KEY, selectedLang);
+  }
+  langBtns.forEach(btn => {
+    if (btn.dataset && btn.dataset.lang === selectedLang) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+
+  // attach handlers
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang || 'all';
+      setActive(lang);
+      // close mobile panel if open
+      const mobilePanel = document.getElementById('mobile-panel');
+      const hamburger = document.getElementById('hamburger');
+      if (mobilePanel && mobilePanel.classList.contains('open')) {
+        mobilePanel.classList.remove('open');
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
 }
 
-/* utils */
-function debounce(fn, ms=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
-function throttle(fn, ms=100){ let busy=false; return (...a)=>{ if(busy) return; busy=true; fn(...a); setTimeout(()=>busy=false, ms); }; }
+/* ---------------------------
+   Small utils
+   --------------------------- */
+function debounce(fn, ms = 200) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function throttle(fn, ms = 100) { let busy = false; return (...a) => { if (busy) return; busy = true; fn(...a); setTimeout(() => busy = false, ms); }; }
 
-/* viewer */
-if(location.pathname.endsWith('viewer.html') || document.getElementById('song-view')){
-  (async function(){
+/* ---------------------------
+   Viewer (lyrics + chords rendering + transpose)
+   --------------------------- */
+if (location.pathname.endsWith('viewer.html') || document.getElementById('song-view')) {
+  (async function () {
     const params = new URLSearchParams(location.search);
-    const file = params.get('file');
+    const fileParam = params.get('file');
     const viewEl = document.getElementById('song-view');
     const titleEl = document.getElementById('song-title');
-    if(!file){ if(viewEl) viewEl.textContent='No song specified.'; return; }
-    let song = await fetchJSON(file).catch(()=>null);
-    if(!song) song = await fetchJSON('songs/' + file).catch(()=>null);
-    if(!song){ if(viewEl) viewEl.textContent='Unable to load song'; return; }
+    if (!fileParam) { if (viewEl) viewEl.textContent = 'No song specified.'; return; }
+
+    // Try the path in a few ways: as given, and prefixed with songs/
+    let song = await fetchJSON(fileParam).catch(() => null);
+    if (!song) song = await fetchJSON('songs/' + fileParam).catch(() => null);
+    if (!song) { if (viewEl) viewEl.textContent = 'Unable to load song'; return; }
+
     let transpose = 0;
-    function renderSong(){
-      if(!viewEl) return;
+
+    function renderSong() {
+      if (!viewEl) return;
       viewEl.innerHTML = '';
-      (song.lines||[]).forEach(line=>{
-        const ln = document.createElement('div'); ln.className='lyric-line';
-        if(line.chords && line.chords.length){
-          const cr = document.createElement('div'); cr.className='chords-row';
-          const transposed = (line.chords||[]).map(c=>transposeChordSingle(c, transpose)).join(' ');
-          cr.textContent = transposed; ln.appendChild(cr);
+
+      (song.lines || []).forEach(line => {
+        const ln = document.createElement('div'); ln.className = 'lyric-line';
+
+        // Case A: aligned arrays (best)
+        if (Array.isArray(line.chords) && Array.isArray(line.lyrics)) {
+          const pairs = document.createElement('div'); pairs.className = 'lyric-pairs';
+          const len = Math.max(line.chords.length, line.lyrics.length);
+
+          for (let i = 0; i < len; i++) {
+            const chordText = line.chords[i] || '';
+            const wordText = line.lyrics[i] || '';
+
+            const pair = document.createElement('div'); pair.className = 'lyric-pair';
+
+            const chordEl = document.createElement('div'); chordEl.className = 'chord';
+            chordEl.textContent = chordText ? transposeChordSingle(chordText, transpose) : '';
+
+            const wordEl = document.createElement('div'); wordEl.className = 'word';
+            wordEl.textContent = wordText;
+
+            pair.appendChild(chordEl);
+            pair.appendChild(wordEl);
+            pairs.appendChild(pair);
+          }
+
+          ln.appendChild(pairs);
         }
-        if(line.chordLine){
-          const cr = document.createElement('div'); cr.className='chords-row'; cr.textContent = line.chordLine; ln.appendChild(cr);
+        // Case B: chordLine string for whole phrase
+        else if (line.chordLine) {
+          const chordBlock = document.createElement('div'); chordBlock.className = 'chord-block';
+          chordBlock.textContent = line.chordLine.split(/\s+/).map(c => transposeChordSingle(c, transpose)).join(' ');
+          ln.appendChild(chordBlock);
+
+          if (Array.isArray(line.lyrics)) {
+            const lyricText = document.createElement('div'); lyricText.className = 'lyrics-row';
+            lyricText.textContent = (line.lyrics || []).join(' ');
+            ln.appendChild(lyricText);
+          } else if (line.lyrics) {
+            const lyricText = document.createElement('div'); lyricText.className = 'lyrics-row';
+            lyricText.textContent = line.lyrics;
+            ln.appendChild(lyricText);
+          }
         }
-        if(line.lyrics && line.lyrics.length){
-          const lr = document.createElement('div'); lr.className='lyrics-row'; lr.textContent = (line.lyrics||[]).join(' '); ln.appendChild(lr);
+        // Case C: only lyrics (string or array)
+        else {
+          if (Array.isArray(line.lyrics)) {
+            const lyricText = document.createElement('div'); lyricText.className = 'lyrics-row';
+            lyricText.textContent = (line.lyrics || []).join(' ');
+            ln.appendChild(lyricText);
+          } else if (typeof line.lyrics === 'string') {
+            const lyricText = document.createElement('div'); lyricText.className = 'lyrics-row';
+            lyricText.textContent = line.lyrics;
+            ln.appendChild(lyricText);
+          }
         }
+
         viewEl.appendChild(ln);
       });
-      if(titleEl) titleEl.textContent = song.title + (song.key?` [${song.key}]`:'');
+
+      if (titleEl) titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+      updateThemeButton();
     }
+
     renderSong();
+
     const up = document.getElementById('transpose-up');
     const down = document.getElementById('transpose-down');
-    if(up) up.addEventListener('click', ()=>{ transpose++; renderSong(); });
-    if(down) down.addEventListener('click', ()=>{ transpose--; renderSong(); });
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === '+' || e.key === '='){ transpose++; renderSong(); }
-      if(e.key === '-' || e.key === '_'){ transpose--; renderSong(); }
+    if (up) up.addEventListener('click', () => { transpose++; renderSong(); });
+    if (down) down.addEventListener('click', () => { transpose--; renderSong(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '+' || e.key === '=') { transpose++; renderSong(); }
+      if (e.key === '-' || e.key === '_') { transpose--; renderSong(); }
     });
   })();
 }
