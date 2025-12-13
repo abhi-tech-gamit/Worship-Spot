@@ -1,0 +1,31 @@
+{
+  "title": "Aaj Ka Din-hi",
+  "artist": "Unknown",
+  "key": "D",
+  "lines": [
+    {
+      "chords": [
+        "D"
+      ],
+      "lyrics": [
+        "आज",
+        "का",
+        "दिन"
+      ]
+    },
+    {
+      "chords": [
+        "A",
+        "G",
+        "A",
+        "D"
+      ],
+      "lyrics": [
+        "आनंदित",
+        "हो",
+        "हम"
+      ]
+    }
+  ],
+  "language": "hi"
+}
