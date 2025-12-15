@@ -74,13 +74,30 @@ function transposeChord(chord, steps) {
    Search functionality
 --------------------------- */
 function setupSearch() {
-  const searchInput = document.getElementById('search-input');
-  if (!searchInput) return;
+  // Find existing search input by class (as styled in CSS)
+  const searchInput = document.querySelector('.search-input');
   
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase().trim();
-    filterSongs(query);
-  });
+  if (searchInput) {
+    // Remove any duplicate search inputs that might exist
+    const allSearchInputs = document.querySelectorAll('input[type="search"]');
+    allSearchInputs.forEach(input => {
+      if (input !== searchInput) {
+        // Remove the parent container of duplicate search inputs
+        const parentContainer = input.closest('.search-container');
+        if (parentContainer) {
+          parentContainer.remove();
+        } else {
+          input.remove();
+        }
+      }
+    });
+    
+    // Add event listener to the existing search input
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      filterSongs(query);
+    });
+  }
 }
 
 function filterSongs(query) {
@@ -127,12 +144,17 @@ let offset = 0;
 function initList(allSongs) {
   indexList = allSongs.slice();
   offset = 0;
-  document.getElementById('song-list').innerHTML = '';
-  loadNextBatch();
+  const songList = document.getElementById('song-list');
+  if (songList) {
+    songList.innerHTML = '';
+    loadNextBatch();
+  }
 }
 
 function loadNextBatch() {
   const list = document.getElementById('song-list');
+  if (!list) return;
+  
   const batch = indexList.slice(offset, offset + BATCH);
 
   batch.forEach(song => {
@@ -173,7 +195,7 @@ if (location.pathname.endsWith('viewer.html')) {
     const view = document.getElementById('song-view');
     const titleEl = document.getElementById('song-title');
 
-    if (!file) return;
+    if (!file || !view) return;
 
     const song = await fetchJSON(file).catch(() => null);
     if (!song) {
@@ -218,7 +240,9 @@ if (location.pathname.endsWith('viewer.html')) {
         view.appendChild(row);
       });
 
-      titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+      if (titleEl) {
+        titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+      }
     }
 
     render();
