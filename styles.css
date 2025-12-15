@@ -128,6 +128,11 @@ a{color:inherit;text-decoration:none}
   box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
 }
 
+/* Hide any duplicate search containers that might be added by JavaScript */
+.search-container:not(.search-wrap) {
+  display: none;
+}
+
 /* ================= MAIN ================= */
 .main{
   max-width:1200px;
