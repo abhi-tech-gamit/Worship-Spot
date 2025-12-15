@@ -7,78 +7,7 @@
     "language": "hi",
     "key": "D"
   },
-  {
-    "title": "Yeshu Ka Naam Hai Saari Zameen Par-hi",
-    "artist": "Unknown",
-    "filename": "songs/02_Yeshu_Ka_Naam.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Paavan Hai Vo Prabhu Hamara-hi",
-    "artist": "Unknown",
-    "filename": "songs/03_Paavan_Hai_Vo.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Aaj Ka Din-hi",
-    "artist": "Unknown",
-    "filename": "songs/04_Aaj_Ka_Din.json",
-    "tags": ["worship", "hindi", "celebration"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Stuti Aradhana Upar Jati Hai-hi",
-    "artist": "Unknown",
-    "filename": "songs/05_Stuti_Aradhana.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Bolo Jai Milkar Jai-hi",
-    "artist": "Unknown",
-    "filename": "songs/06_Bolo_Jai_Milkar_Jai.json",
-    "tags": ["worship", "hindi", "praise"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Jungli Darakhton Ke Darmiya-hi",
-    "artist": "Unknown",
-    "filename": "songs/07_Jungli_Darakhton.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Mahima Se Jo Tu Bhara Hua-hi",
-    "artist": "Unknown",
-    "filename": "songs/08_Mahima_Se_Bhara.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Teri Ichchha Poori Ho Jaaye-hi",
-    "artist": "Unknown",
-    "filename": "songs/09_Teri_Iccha.json",
-    "tags": ["worship", "hindi", "prayer"],
-    "language": "hi",
-    "key": "D"
-  },
-  {
-    "title": "Kuch Kamti Na Mujhko Hogi-hi",
-    "artist": "Unknown",
-    "filename": "songs/10_Kuch_Kamti_Na_Hogi.json",
-    "tags": ["worship", "hindi"],
-    "language": "hi",
-    "key": "D"
-  }
+ 
   {
   "title": "Jab Sath Hai Masiha",
   "artist": "Unknown",
