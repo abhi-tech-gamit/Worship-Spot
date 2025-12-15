@@ -1,69 +1,71 @@
 {
-  "title": "Awaaz Uthayenge-hi",
-  "artist": "Unknown",
+  "title": "आवाज़ उठाएँगे-hi",
+  "artist": "Abhi Artist",
   "language": "hi",
   "key": "Eb",
   "lines": [
-
     {
-      "lyrics": ["Awaaz", "uthayenge,", "hum", "saaz", "bajayenge"],
-      "chords": ["Eb", "", "", "Bb", "Eb"]
+      "section": "CHORUS",
+      "chords": ["Eb", "", "", "Bb", "", "Eb"],
+      "lyrics": ["आवाज़", "उठाएँगे,", "हम", "साज़", "बजाएँगे", ""]
     },
     {
-      "lyrics": ["Hai", "Yeshu", "mahaan", "apna,", "yeh", "geet", "sunayenge"],
-      "chords": ["Eb", "", "Ab", "", "Bb", "", "Eb"]
-    },
-
-    {
-      "lyrics": ["Na", "dekh", "saka", "humko,", "tu", "paap", "ke", "saagar", "mai,"],
-      "chords": ["Eb", "", "", "", "Ab", "", "", "", ""]
-    },
-    {
-      "lyrics": ["Aur", "banke", "manushya", "aaya,", "Aakash", "se", "saagar", "mai"],
-      "chords": ["Bb", "", "", "", "Ab", "", "Bb", ""]
-    },
-    {
-      "lyrics": ["Mukti", "ka", "tu", "data", "hai,", "duniya", "ko", "batayenge"],
-      "chords": ["Eb", "", "Bb", "", "Eb", "", "", ""]
-    },
-    {
-      "lyrics": ["Hai", "Yeshu", "mahaan", "apna,", "yeh", "geet", "sunayenge"],
-      "chords": ["Eb", "", "Ab", "", "Bb", "", "Eb"]
+      "chords": ["Eb", "", "Ab", "Bb", "", "Eb"],
+      "lyrics": ["है", "यीशु", "महान", "अपना,", "ये", "गीत", "सुनाएँगे"]
     },
 
     {
-      "lyrics": ["Sansaar", "ki", "sundarta", "mai,", "yeh", "roop", "jo", "tera", "hi"],
-      "chords": ["Eb", "", "", "", "Ab", "", "", "", ""]
+      "section": "VERSE 1",
+      "chords": ["Eb", "", "", "", "Ab"],
+      "lyrics": ["ना", "देख", "सका", "हमको,", "तू", "पाप", "के", "सागर", "में,"]
     },
     {
-      "lyrics": ["In", "chaand", "sitaaro", "mein,", "hai", "aks", "jo", "tera", "hi"],
-      "chords": ["Bb", "", "", "", "Ab", "", "", "", ""]
+      "chords": ["Bb", "", "Ab", "Eb", "Ab", "Bb", "Eb"],
+      "lyrics": ["और", "बनके", "मनुष्य", "आया,", "आकाश", "से", "सागर", "में"]
     },
     {
-      "lyrics": ["Mahima", "ki", "teri", "baaten,", "hum", "sabko", "batayenge"],
-      "chords": ["Eb", "", "Bb", "", "", "", "Eb"]
+      "chords": ["Eb", "", "", "Bb", "", "Eb"],
+      "lyrics": ["मुक्ति", "का", "तू", "दाता", "है,", "दुनिया", "को", "बताएँगे"]
     },
     {
-      "lyrics": ["Hai", "Yeshu", "mahaan", "apna,", "yeh", "geet", "sunayenge"],
-      "chords": ["Eb", "", "Ab", "", "Bb", "", "Eb"]
+      "chords": ["Eb", "", "Ab", "Bb", "", "Eb"],
+      "lyrics": ["है", "यीशु", "महान", "अपना,", "ये", "गीत", "सुनाएँगे"]
     },
 
     {
-      "lyrics": ["Dil", "tera", "khazana", "hai,", "ek", "paak", "mohabbat", "ka,"],
-      "chords": ["Eb", "", "", "", "Ab", "", "", ""]
+      "section": "VERSE 2",
+      "chords": ["Eb", "", "", "", "Ab"],
+      "lyrics": ["संसार", "की", "सुंदरता", "में,", "ये", "रूप", "जो", "तेरा", "ही"]
     },
     {
-      "lyrics": ["Dha", "pa", "na", "saka", "koi,", "Saagar", "hai", "tu", "ulfat", "ka"],
-      "chords": ["Bb", "", "", "", "", "Ab", "", "Bb", "", ""]
+      "chords": ["Bb", "", "Ab", "Eb", "Ab", "Bb", "Eb"],
+      "lyrics": ["इन", "चाँद", "सितारों", "में,", "है", "अक्स", "जो", "तेरा", "ही"]
     },
     {
-      "lyrics": ["Hum", "teri", "mohabbat", "se,", "dil", "apna", "sajayenge;"],
-      "chords": ["Eb", "", "", "", "Bb", "", "Eb"]
+      "chords": ["Eb", "", "", "Bb", "", "Eb"],
+      "lyrics": ["महिमा", "की", "तेरी", "बातें,", "हम", "सबको", "बताएँगे"]
     },
     {
-      "lyrics": ["Hai", "Yeshu", "mahaan", "apna,", "yeh", "geet", "sunayenge"],
-      "chords": ["Eb", "", "Ab", "", "Bb", "", "Eb"]
+      "chords": ["Eb", "", "Ab", "Bb", "", "Eb"],
+      "lyrics": ["है", "यीशु", "महान", "अपना,", "ये", "गीत", "सुनाएँगे"]
+    },
+
+    {
+      "section": "VERSE 3",
+      "chords": ["Eb", "", "", "", "Ab"],
+      "lyrics": ["दिल", "तेरा", "खज़ाना", "है,", "एक", "पाक़", "मोहब्बत", "का,"]
+    },
+    {
+      "chords": ["Bb", "", "Ab", "Eb", "Ab", "Bb", "Eb"],
+      "lyrics": ["धा", "पा", "न", "सका", "कोई,", "सागर", "है", "तू", "उल्फ़त", "का"]
+    },
+    {
+      "chords": ["Eb", "", "", "Bb", "", "Eb"],
+      "lyrics": ["हम", "तेरी", "मोहब्बत", "से,", "दिल", "अपना", "सजाएँगे"]
+    },
+    {
+      "chords": ["Eb", "", "Ab", "Bb", "", "Eb"],
+      "lyrics": ["है", "यीशु", "महान", "अपना,", "ये", "गीत", "सुनाएँगे"]
     }
-
   ]
 }
