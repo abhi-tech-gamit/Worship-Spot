@@ -1,5 +1,5 @@
 /* styles.css — Worship SPOT
-   ENHANCED: Minimized vertical spacing between lyric lines
+   ENHANCED: Mobile-optimized with responsive design
 */
 
 /* ================= CORE VARIABLES ================= */
@@ -39,6 +39,7 @@ html,body{
   font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   font-size:var(--base-font);
   line-height: 1.6;
+  -webkit-text-size-adjust: 100%; /* Prevent iOS font size adjustment */
 }
 a{color:inherit;text-decoration:none}
 
@@ -84,39 +85,42 @@ a{color:inherit;text-decoration:none}
 
 .hamburger{
   display:none;
-  width: 36px;
-  height: 36px;
+  width: 44px; /* Increased for better touch target */
+  height: 44px; /* Increased for better touch target */
   border-radius: 8px;
   border: 1px solid var(--border-light);
   background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Center the hamburger icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .hamburger:hover {
   border-color: var(--accent3);
   background: rgba(6, 182, 212, 0.1);
 }
-@media(max-width:800px){.hamburger{display:block}}
 
 /* ================= SEARCH ================= */
 .search-wrap{
   width:100%;
   max-width:880px;
   margin:0 auto;
-  padding: 20px 0;
+  padding: 20px 16px; /* Added horizontal padding for mobile */
   border-bottom: 1px solid var(--border-light);
 }
 .search-input{
   width:100%;
-  min-height:52px;
+  min-height:48px; /* Standard touch target height */
   padding:12px 20px 12px 52px;
   border-radius:999px;
   border:2px solid var(--border-color);
-  font-size:1.1rem;
+  font-size:16px; /* Prevents zoom on iOS */
   outline:none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: 20px center;
+  background-position: 16px center;
   transition: all 0.2s ease;
 }
 .search-input:focus {
@@ -128,7 +132,7 @@ a{color:inherit;text-decoration:none}
 .main{
   max-width:1200px;
   margin:24px auto;
-  padding:0 16px;
+  padding:0 12px; /* Reduced padding for mobile */
   border-left: 1px solid var(--border-light);
   border-right: 1px solid var(--border-light);
 }
@@ -198,6 +202,7 @@ a{color:inherit;text-decoration:none}
   font-size: 1.1rem;
   transition: all 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 119, 255, 0.2);
+  min-height: 48px; /* Touch-friendly height */
 }
 .view-btn:hover {
   transform: translateY(-2px);
@@ -230,8 +235,8 @@ a{color:inherit;text-decoration:none}
   gap:12px;
 }
 .viewer-controls button{
-  min-width:52px;
-  min-height:52px;
+  min-width:48px;
+  min-height:48px;
   font-size:1.2rem;
   font-weight:700;
   border-radius:10px;
@@ -246,26 +251,28 @@ a{color:inherit;text-decoration:none}
 }
 
 /* =========================================================
-   VIEWER / LYRICS — MINIMAL VERTICAL SPACING
+   VIEWER / LYRICS — MOBILE-OPTIMIZED
    ========================================================= */
 
 .song-view{
   max-width:980px;
   margin:32px auto;
-  padding:12px 24px; /* Further reduced top/bottom padding */
+  padding:12px 24px;
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   background: var(--surface);
+  overflow-x: auto; /* Allow horizontal scrolling if needed */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
-/* ONE LINE - MINIMAL SPACING */
+/* ONE LINE */
 .lyric-line{
   width:100%;
-  margin-bottom:2px; /* Reduced from 8px to 2px */
+  margin-bottom:8px;
   display:flex;
   justify-content:center;
-  padding: 0; /* Removed padding completely */
-  /* Removed border-bottom to save space */
+  padding: 0;
+  min-height: 44px; /* Touch-friendly height */
 }
 
 /* WORD COLUMNS — NO WRAP */
@@ -282,7 +289,7 @@ a{color:inherit;text-decoration:none}
   align-items:center;
   min-width:3em;
   margin-right:0.5em;
-  padding: 0; /* Removed padding completely */
+  padding: 0;
   border-radius: 6px;
   transition: all 0.2s ease;
 }
@@ -290,16 +297,16 @@ a{color:inherit;text-decoration:none}
   background: rgba(0, 119, 255, 0.05);
 }
 
-/* CHORD SLOT — MINIMAL HEIGHT */
+/* CHORD SLOT */
 .chord{
-  height:1em; /* Reduced from 1.2em to 1em */
+  height:1em;
   font-family:'Fira Mono','Consolas',monospace;
   font-size:1.3rem;
   font-weight:700;
   color:#7ad7ff;
-  line-height:1.2; /* Reduced from 1.2 to 1 */
+  line-height:1;
   white-space:nowrap;
-  padding: 0 4px; /* Reduced vertical padding */
+  padding: 0 4px;
   border-radius: 4px;
   border-bottom: 1px solid rgba(122, 215, 255, 0.3);
 }
@@ -307,11 +314,11 @@ a{color:inherit;text-decoration:none}
 /* LYRIC WORD */
 .word{
   font-size:1.5rem;
-  line-height:1.4; /* Reduced from 1.4 to 1.2 */
+  line-height:1.2;
   white-space:nowrap;
   color:var(--text);
   text-align:center;
-  padding: 0 2px; /* Minimal padding */
+  padding: 0 2px;
   border-radius: 4px;
 }
 
@@ -319,23 +326,23 @@ a{color:inherit;text-decoration:none}
 .chord-block{
   text-align:center;
   font-family:'Fira Mono',monospace;
-  margin-bottom:3px; /* Reduced from 6px */
+  margin-bottom:3px;
   font-size:1.2rem;
   color:#7ad7ff;
-  padding: 2px 6px; /* Minimal padding */
+  padding: 2px 6px;
   border: 1px solid rgba(122, 215, 255, 0.2);
   border-radius: 6px;
   background: rgba(122, 215, 255, 0.05);
-  line-height: 1.2; /* Reduced from 1.3 */
+  line-height:1.2;
 }
 .lyrics-row{
   font-size:1.3rem;
-  line-height:1.2; /* Reduced from 1.4 */
+  line-height:1.2;
   text-align:center;
   color:var(--text);
-  padding: 2px 8px; /* Minimal padding */
+  padding: 2px 8px;
   border-bottom: 1px solid var(--border-light);
-  margin-bottom: 2px; /* Reduced from 4px */
+  margin-bottom: 2px;
 }
 
 /* ================= FOOTER ================= */
@@ -351,4 +358,132 @@ a{color:inherit;text-decoration:none}
   border-radius: var(--radius);
   font-size: 1rem;
   line-height: 1.6;
+}
+
+/* ================= MOBILE OPTIMIZATIONS ================= */
+
+/* Tablets and smaller */
+@media(max-width:768px){
+  .song-grid{
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;
+  }
+  
+  .card{
+    padding:20px;
+  }
+  
+  .title{
+    font-size:1.2rem;
+  }
+  
+  .viewer-title{
+    font-size:1.3rem;
+  }
+}
+
+/* Mobile phones */
+@media(max-width:480px){
+  :root{
+    --base-font:16px; /* Smaller base font for mobile */
+  }
+  
+  .topbar-inner{
+    padding:0 12px;
+  }
+  
+  .search-wrap{
+    padding:16px 12px;
+  }
+  
+  .main{
+    padding:0 8px;
+    margin:16px auto;
+  }
+  
+  .song-grid{
+    grid-template-columns:1fr; /* Single column on mobile */
+    gap:12px;
+  }
+  
+  .card{
+    padding:16px;
+  }
+  
+  .title{
+    font-size:1.1rem;
+  }
+  
+  .meta{
+    font-size:0.9rem;
+  }
+  
+  .view-btn{
+    padding:12px 20px;
+    font-size:1rem;
+  }
+  
+  .viewer-header{
+    height:56px;
+  }
+  
+  .viewer-title{
+    font-size:1.2rem;
+    padding:8px 16px;
+  }
+  
+  .viewer-controls{
+    gap:8px;
+    right:12px;
+  }
+  
+  .viewer-controls button{
+    min-width:44px;
+    min-height:44px;
+    font-size:1.1rem;
+  }
+  
+  .song-view{
+    margin:20px auto;
+    padding:8px 16px;
+  }
+  
+  .lyric-line{
+    margin-bottom:6px;
+  }
+  
+  .chord{
+    font-size:1.1rem;
+  }
+  
+  .word{
+    font-size:1.3rem;
+  }
+  
+  .lyric-pair{
+    min-width:2.8em;
+    margin-right:0.4em;
+  }
+  
+  .footer{
+    margin:24px auto;
+    padding:16px;
+    font-size:0.9rem;
+  }
+}
+
+/* Very small screens */
+@media(max-width:360px){
+  .chord{
+    font-size:1rem;
+  }
+  
+  .word{
+    font-size:1.2rem;
+  }
+  
+  .lyric-pair{
+    min-width:2.6em;
+    margin-right:0.3em;
+  }
 }
