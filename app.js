@@ -71,6 +71,35 @@ function transposeChord(chord, steps) {
 }
 
 /* ---------------------------
+   Search functionality
+--------------------------- */
+function setupSearch() {
+  const searchInput = document.getElementById('search-input');
+  if (!searchInput) return;
+  
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    filterSongs(query);
+  });
+}
+
+function filterSongs(query) {
+  if (!window.__ALL_SONGS) return;
+  
+  const filtered = window.__ALL_SONGS.filter(song => {
+    if (!query) return true;
+    
+    const titleMatch = song.title && song.title.toLowerCase().includes(query);
+    const artistMatch = song.artist && song.artist.toLowerCase().includes(query);
+    const keyMatch = song.key && song.key.toLowerCase().includes(query);
+    
+    return titleMatch || artistMatch || keyMatch;
+  });
+  
+  initList(filtered);
+}
+
+/* ---------------------------
    Init
 --------------------------- */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -81,6 +110,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const songs = await fetchJSON('songs.json').catch(() => []);
   window.__ALL_SONGS = Array.isArray(songs) ? songs : [];
+  
+  // Setup search functionality
+  setupSearch();
+  
+  // Initialize the list with all songs
   initList(window.__ALL_SONGS);
 });
 
