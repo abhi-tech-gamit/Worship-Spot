@@ -7,6 +7,15 @@
     "language": "hi",
     "key": "D"
   },
+
+   {
+    "title": "Shor Duniya Me",
+    "artist": "Unknown",
+    "filename": "songs/02_Shor_Duniya_Me.json",
+    "tags": ["worship", "hindi", "easy"],
+    "language": "hi",
+    "key": "Em"
+  },
  
   {
   "title": "Jab Sath Hai Masiha",
