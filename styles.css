@@ -1,6 +1,5 @@
 /* styles.css — Worship SPOT
-   FINAL: Model-B (word-level) chord alignment FIXED
-   + Search bar & transpose controls restored
+   FINAL: Word-level chord alignment + Hindi spacing FIXED
 */
 
 /* ================= CORE VARIABLES ================= */
@@ -66,7 +65,7 @@ a{color:inherit;text-decoration:none}
 /* ================= SEARCH ================= */
 .search-wrap{
   width:100%;
-  max-width:880px; /* restored size */
+  max-width:880px;
   margin:0 auto;
 }
 .search-input{
@@ -126,8 +125,6 @@ a{color:inherit;text-decoration:none}
   font-weight:800;
   font-size:1.3rem;
 }
-
-/* TRANSPOSE CONTROLS — FIXED SIZE */
 .viewer-controls{
   position:absolute;
   right:16px;
@@ -145,7 +142,7 @@ a{color:inherit;text-decoration:none}
 }
 
 /* =========================================================
-   VIEWER / LYRICS — FINAL FIXED (WORD-LEVEL SAFE)
+   VIEWER / LYRICS — WORD-LEVEL (FINAL, SAFE)
    ========================================================= */
 
 .song-view{
@@ -175,6 +172,7 @@ a{color:inherit;text-decoration:none}
   flex-direction:column;
   align-items:center;
   min-width:2.6em;
+  margin-right:0.35em; /* ← FIX: prevents Hindi word joining */
 }
 
 /* CHORD SLOT — ALWAYS RESERVED */
