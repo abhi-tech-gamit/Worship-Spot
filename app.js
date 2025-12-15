@@ -1,28 +1,27 @@
-// app.js — Worship SPOT (FINAL)
-// Model B (word-level chords) — alignment FIXED
+// app.js — Worship SPOT (FULLY FIXED, COPY-PASTE READY)
 
 const BATCH = 20;
 const FILTER_LANG_KEY = 'worship_filter_lang';
 const THEME_KEY = 'worship_theme';
 
 /* ---------------------------
-   Utility: robust fetchJSON
-   --------------------------- */
-async function fetchJSON(path){
+   Robust JSON fetch
+--------------------------- */
+async function fetchJSON(path) {
   try {
     const res = await fetch(path);
-    if(res.ok) return await res.json();
+    if (res.ok) return await res.json();
     throw new Error('fetch failed');
-  } catch(e){
-    return new Promise((resolve,reject)=>{
+  } catch {
+    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.overrideMimeType('application/json');
       xhr.open('GET', path, true);
-      xhr.onreadystatechange = ()=> {
-        if(xhr.readyState===4){
-          if(xhr.status===200||xhr.status===0){
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200 || xhr.status === 0) {
             try { resolve(JSON.parse(xhr.responseText)); }
-            catch(err){ reject(err); }
+            catch (e) { reject(e); }
           } else reject(xhr.status);
         }
       };
@@ -33,106 +32,168 @@ async function fetchJSON(path){
 
 /* ---------------------------
    Theme
-   --------------------------- */
-function applyThemeFromPref(){
+--------------------------- */
+function applyThemeFromPref() {
   const saved = localStorage.getItem(THEME_KEY);
-  if(saved === 'dark') document.documentElement.classList.add('dark');
+  if (saved === 'dark') document.documentElement.classList.add('dark');
   else document.documentElement.classList.remove('dark');
 }
-function toggleTheme(){
+
+function toggleTheme() {
   document.documentElement.classList.toggle('dark');
-  localStorage.setItem(THEME_KEY,
+  localStorage.setItem(
+    THEME_KEY,
     document.documentElement.classList.contains('dark') ? 'dark' : 'light'
   );
 }
 
 /* ---------------------------
    Transpose helpers
-   --------------------------- */
+--------------------------- */
 const CHORDS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const FLAT_MAP = {Db:'C#',Eb:'D#',Gb:'F#',Ab:'G#',Bb:'A#'};
+const FLAT_MAP = { Db:'C#', Eb:'D#', Gb:'F#', Ab:'G#', Bb:'A#' };
 
-function transposeChordSingle(chord, steps){
-  if(!chord) return '';
-  if(chord.includes('/')){
-    const [a,b] = chord.split('/');
-    return transposeChordSingle(a,steps)+'/'+transposeChordSingle(b,steps);
+function transposeChord(chord, steps) {
+  if (!chord) return '';
+  if (chord.includes('/')) {
+    const [a, b] = chord.split('/');
+    return `${transposeChord(a, steps)}/${transposeChord(b, steps)}`;
   }
   const m = chord.match(/^([A-G])([b#]?)(.*)$/);
-  if(!m) return chord;
-  let [,r,a,s] = m;
-  let full = r+(a||'');
-  if(FLAT_MAP[full]) full = FLAT_MAP[full];
-  let i = CHORDS.indexOf(full);
-  if(i<0) return chord;
-  let n = (i+steps)%12; if(n<0)n+=12;
-  return CHORDS[n]+(s||'');
+  if (!m) return chord;
+  let root = m[1] + (m[2] || '');
+  let suffix = m[3] || '';
+  if (FLAT_MAP[root]) root = FLAT_MAP[root];
+  let idx = CHORDS.indexOf(root);
+  if (idx === -1) return chord;
+  idx = (idx + steps + 12) % 12;
+  return CHORDS[idx] + suffix;
+}
+
+/* ---------------------------
+   Init
+--------------------------- */
+document.addEventListener('DOMContentLoaded', async () => {
+  applyThemeFromPref();
+
+  const themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) themeBtn.onclick = toggleTheme;
+
+  const songs = await fetchJSON('songs.json').catch(() => []);
+  window.__ALL_SONGS = Array.isArray(songs) ? songs : [];
+  initList(window.__ALL_SONGS);
+});
+
+/* ---------------------------
+   Song List
+--------------------------- */
+let indexList = [];
+let offset = 0;
+
+function initList(allSongs) {
+  indexList = allSongs.slice();
+  offset = 0;
+  document.getElementById('song-list').innerHTML = '';
+  loadNextBatch();
+}
+
+function loadNextBatch() {
+  const list = document.getElementById('song-list');
+  const batch = indexList.slice(offset, offset + BATCH);
+
+  batch.forEach(song => {
+    const li = document.createElement('li');
+    li.className = 'card';
+
+    li.innerHTML = `
+      <div class="card-head">
+        <div class="title">${song.title}</div>
+        <div class="meta">${song.artist || ''}</div>
+        <div class="lang-badge">${(song.language || 'en').toUpperCase()}</div>
+      </div>
+      <div class="badges">
+        ${song.key ? `<div class="key-pill">Key: ${song.key}</div>` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="view-btn">View</button>
+      </div>
+    `;
+
+    li.querySelector('.view-btn').onclick = () => {
+      window.location.href = `viewer.html?file=${encodeURIComponent(song.filename)}`;
+    };
+
+    list.appendChild(li);
+  });
+
+  offset += batch.length;
 }
 
 /* ---------------------------
    Viewer
-   --------------------------- */
+--------------------------- */
 if (location.pathname.endsWith('viewer.html')) {
-(async ()=>{
-  const params = new URLSearchParams(location.search);
-  const file = params.get('file');
-  const viewEl = document.getElementById('song-view');
-  const titleEl = document.getElementById('song-title');
+  (async () => {
+    const params = new URLSearchParams(location.search);
+    const file = params.get('file');
+    const view = document.getElementById('song-view');
+    const titleEl = document.getElementById('song-title');
 
-  if(!file){ viewEl.textContent='No song specified'; return; }
+    if (!file) return;
 
-  let song = await fetchJSON(file).catch(()=>null);
-  if(!song) song = await fetchJSON('songs/'+file).catch(()=>null);
-  if(!song){ viewEl.textContent='Failed to load song'; return; }
+    const song = await fetchJSON(file).catch(() => null);
+    if (!song) {
+      view.textContent = 'Failed to load song';
+      return;
+    }
 
-  let transpose = 0;
+    let transpose = 0;
 
-  function renderSong(){
-    viewEl.innerHTML='';
+    function render() {
+      view.innerHTML = '';
+      song.lines.forEach(line => {
+        const row = document.createElement('div');
+        row.className = 'lyric-line';
 
-    song.lines.forEach(line=>{
-      const row = document.createElement('div');
-      row.className='lyric-line';
+        if (Array.isArray(line.chords) && Array.isArray(line.lyrics)) {
+          const wrap = document.createElement('div');
+          wrap.className = 'lyric-pairs';
 
-      if(Array.isArray(line.lyrics) && Array.isArray(line.chords)){
-        const pairs = document.createElement('div');
-        pairs.className='lyric-pairs';
+          line.lyrics.forEach((word, i) => {
+            const pair = document.createElement('div');
+            pair.className = 'lyric-pair';
 
-        const len = Math.max(line.lyrics.length, line.chords.length);
+            const c = document.createElement('div');
+            c.className = 'chord';
+            c.textContent = line.chords[i]
+              ? transposeChord(line.chords[i], transpose)
+              : '';
 
-        for(let i=0;i<len;i++){
-          const pair = document.createElement('div');
-          pair.className='lyric-pair';
+            const w = document.createElement('div');
+            w.className = 'word';
+            w.textContent = word;
 
-          const chordEl = document.createElement('div');
-          chordEl.className='chord';
+            pair.appendChild(c);
+            pair.appendChild(w);
+            wrap.appendChild(pair);
+          });
 
-          const c = line.chords[i] || '';
-          chordEl.innerHTML = c
-            ? transposeChordSingle(c, transpose)
-            : '&nbsp;';     // 🔑 FIX — reserve space
-
-          const wordEl = document.createElement('div');
-          wordEl.className='word';
-          wordEl.textContent = line.lyrics[i] || '';
-
-          pair.appendChild(chordEl);
-          pair.appendChild(wordEl);
-          pairs.appendChild(pair);
+          row.appendChild(wrap);
         }
 
-        row.appendChild(pairs);
-      }
+        view.appendChild(row);
+      });
 
-      viewEl.appendChild(row);
+      titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+    }
+
+    render();
+
+    document.getElementById('transpose-up')?.addEventListener('click', () => {
+      transpose++; render();
     });
-
-    titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
-  }
-
-  renderSong();
-
-  document.getElementById('transpose-up')?.addEventListener('click',()=>{transpose++;renderSong();});
-  document.getElementById('transpose-down')?.addEventListener('click',()=>{transpose--;renderSong();});
-})();
+    document.getElementById('transpose-down')?.addEventListener('click', () => {
+      transpose--; render();
+    });
+  })();
 }
