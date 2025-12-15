@@ -1,8 +1,8 @@
 /* styles.css — Worship SPOT (full file)
-   Option C: keep all features + upgrade viewer UI and lyric alignment
+   FINAL: Model-B (word-level) chord alignment FIXED
 */
 
-/* Core variables */
+/* ================= CORE VARIABLES ================= */
 :root{
   --bg:#ffffff;
   --surface:#ffffff;
@@ -15,7 +15,7 @@
   --header-h:56px;
   --base-font:16px;
 }
-:root.dark {
+:root.dark{
   --bg:#071226;
   --surface:#081124;
   --text:#e6eef9;
@@ -23,179 +23,152 @@
   --card-shadow: 0 8px 34px rgba(0,0,0,0.55);
 }
 
-/* Reset / base */
+/* ================= RESET ================= */
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;font-size:var(--base-font);}
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size:var(--base-font);
+}
 a{color:inherit;text-decoration:none}
 
-/* Topbar / header */
+/* ================= HEADER ================= */
 .topbar{
   position:sticky;top:0;z-index:60;
   backdrop-filter: blur(6px);
   background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));
-  border-bottom: 1px solid rgba(11,17,32,0.04);
+  border-bottom:1px solid rgba(11,17,32,0.04);
 }
-:root.dark .topbar{ background: linear-gradient(180deg, rgba(3,6,12,0.6), rgba(3,6,12,0.45)); border-bottom: 1px solid rgba(255,255,255,0.04); }
-
-.topbar-inner{height:var(--header-h);display:flex;align-items:center;gap:12px;max-width:1200px;margin:0 auto;padding:0 16px;justify-content:space-between}
-.left{display:flex;align-items:center;gap:12px}
-.logo{font-weight:600;font-size:1rem;color:var(--text)}
-.logo strong{font-weight:800}
-.hamburger{display:none;background:transparent;border:0;font-size:20px;padding:8px;border-radius:8px;cursor:pointer}
-@media (max-width:800px){ .hamburger{display:block} .center{display:none} }
-
-.center{flex:1;display:flex;justify-content:center}
-.search-wrap{width:60%;max-width:720px;transition:width .2s ease}
-.search-input{width:100%;padding:10px 14px;border-radius:999px;border:1px solid rgba(11,17,32,0.06);outline:none;font-size:0.95rem;background:transparent;color:var(--text);box-shadow:var(--card-shadow)}
-.search-input:focus{box-shadow:0 8px 30px rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.15)}
-
-.right{display:flex;align-items:center;gap:8px}
-.locale-select{padding:8px;border-radius:8px;border:1px solid rgba(11,17,32,0.06);background:transparent;color:var(--text)}
-.small-btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent3));color:white;cursor:pointer;font-weight:700}
-@media (max-width:480px){ .locale-select{display:none} }
-
-/* Desktop language filters */
-.lang-filters-desktop { display:flex; gap:8px; align-items:center; margin-right:8px; }
-.lang-filters-desktop .lang-filter {
-  padding:8px 10px;
-  border-radius:8px;
-  border:1px solid rgba(11,17,32,0.06);
-  background:transparent;
-  cursor:pointer;
-  font-size:0.9rem;
+:root.dark .topbar{
+  background: linear-gradient(180deg, rgba(3,6,12,0.6), rgba(3,6,12,0.45));
+  border-bottom:1px solid rgba(255,255,255,0.04);
 }
-.lang-filters-desktop .lang-filter.active {
-  background: linear-gradient(90deg, var(--accent1), var(--accent3));
-  color:white;
-  border-color:transparent;
+
+.topbar-inner{
+  height:var(--header-h);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 16px;
 }
-@media (max-width:800px){ .lang-filters-desktop{ display:none; } }
 
-/* mobile panel */
-.mobile-panel{display:none;position:relative}
-.mobile-panel.open{display:block;border-top:1px solid rgba(0,0,0,0.05);background:transparent}
-.mobile-controls{padding:12px}
-.mobile-row{margin-bottom:8px}
-.lang-filters{display:flex;gap:8px;flex-wrap:wrap}
-.lang-filter{padding:8px 10px;border-radius:8px;border:1px solid rgba(11,17,32,0.06);background:transparent;cursor:pointer}
-.lang-filter.active{background:linear-gradient(90deg,var(--accent1),var(--accent3));color:white;border-color:transparent}
+.logo{font-weight:700}
+.hamburger{display:none}
+@media(max-width:800px){.hamburger{display:block}}
 
-/* main content */
+/* ================= MAIN ================= */
 .main{max-width:1200px;margin:18px auto;padding:0 16px}
-.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.page-title{margin:0;font-size:1.6rem}
-.muted{color:var(--muted)}
-.song-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(1,1fr);gap:16px}
-@media (min-width:520px){ .song-grid{grid-template-columns:repeat(2,1fr)} }
-@media (min-width:880px){ .song-grid{grid-template-columns:repeat(3,1fr)} }
-@media (min-width:1400px){ .song-grid{grid-template-columns:repeat(4,1fr)} }
 
-/* card */
+/* ================= SONG GRID ================= */
+.song-grid{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+
+/* ================= CARD ================= */
 .card{
   background:var(--surface);
-  border-radius:12px;padding:18px;border:1px solid rgba(11,17,32,0.04);
-  box-shadow:var(--card-shadow);display:flex;flex-direction:column;gap:12px;transition:transform .16s ease, box-shadow .16s ease;text-align:center;align-items:center;
+  border-radius:12px;
+  padding:18px;
+  border:1px solid rgba(11,17,32,0.04);
+  box-shadow:var(--card-shadow);
+  text-align:center;
 }
-.card:hover{transform:translateY(-8px);box-shadow:0 16px 44px rgba(2,6,23,0.14)}
-.card-head{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px}
-.title{font-weight:700;font-size:1.12rem;text-align:center}
-.meta{color:var(--muted);font-size:0.95rem;text-align:center}
-.badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.tag{font-size:0.78rem;padding:6px 8px;border-radius:999px;border:1px solid rgba(11,17,32,0.05);background:transparent;color:var(--muted)}
-.lang-badge{font-weight:700;font-size:0.8rem;padding:6px 8px;border-radius:8px;border:1px solid rgba(11,17,32,0.05)}
-.card-actions{display:flex;gap:8px;align-items:center;justify-content:center;width:100%}
-.view-btn{padding:10px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent3));color:white;border:0;cursor:pointer;font-weight:700;min-width:84px}
-.view-btn:hover{transform:translateY(-3px)}
-.key-pill{font-size:0.9rem;color:var(--muted);padding:6px 8px;border-radius:8px;border:1px solid rgba(11,17,32,0.04);background:transparent}
-
-/* gradient underline hover */
-.underline-anim{position:relative;display:inline-block}
-.underline-anim::after{
-  content:"";position:absolute;left:0;right:0;bottom:-6px;height:3px;border-radius:6px;transform:scaleX(0);transform-origin:left center;
-  background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:transform .22s cubic-bezier(.2,.9,.3,1);
+.title{font-weight:700}
+.meta{color:var(--muted)}
+.view-btn{
+  padding:10px 14px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent3));
+  color:white;
+  border:0;
+  cursor:pointer;
+  font-weight:700;
 }
-.underline-anim:hover::after{transform:scaleX(1)}
-
-/* loading */
-.loading{text-align:center;color:var(--muted);padding:18px;margin:12px 0}
 
 /* =========================================================
-   VIEWER / LYRICS STYLES (UPDATED: centered, larger fonts)
+   VIEWER / LYRICS — FINAL FIXED (WORD-LEVEL SAFE)
    ========================================================= */
 
-/* viewer header */
-.viewer-header{height:56px;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid rgba(11,17,32,0.04);background:transparent;position:relative}
-.back{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px;border:1px solid transparent}
-.viewer-title{font-weight:800;margin:0 auto;font-size:1.28rem;text-align:center}
-.viewer-controls{position:absolute;right:16px;top:8px;display:flex;gap:8px}
-
-/* song view container */
-.song-view{max-width:980px;margin:26px auto;padding:0 16px}
-
-/* each lyric line container (centered) */
-.lyric-line {
-  width: 100%;
-  margin-bottom: 14px;
-  display: flex;
-  justify-content: center;
+.song-view{
+  max-width:980px;
+  margin:26px auto;
+  padding:0 16px;
 }
 
-/* wrapper for word-chord pairs */
-.lyric-pairs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 18px;
+/* ONE LINE */
+.lyric-line{
+  width:100%;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:center;
 }
 
-/* single pair: chord above the word */
-.lyric-pair {
-  display: grid;
-  grid-template-rows: auto auto;
-  text-align: center;
-  min-width: 40px;
+/* WORD COLUMNS — NO WRAP */
+.lyric-pairs{
+  display:inline-flex;
+  align-items:flex-start;
+  white-space:nowrap;
 }
 
-/* chord */
-.chord {
-  font-family: 'Fira Mono', 'Consolas', monospace;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #7ad7ff;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-  white-space: nowrap;
+/* SINGLE WORD + CHORD COLUMN */
+.lyric-pair{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:2.6em;
 }
 
-/* lyric word */
-.word {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  white-space: nowrap;
-  color: var(--text);
-  text-align: center;
+/* CHORD SLOT — ALWAYS RESERVED */
+.chord{
+  height:1.3em;
+  font-family:'Fira Mono','Consolas',monospace;
+  font-size:1.15rem;
+  font-weight:700;
+  color:#7ad7ff;
+  line-height:1.3;
+  white-space:nowrap;
 }
 
-/* fallback chord block (if line has a full chordLine string) */
-.chord-block {
-  display:block;
+/* LYRIC WORD */
+.word{
+  font-size:1.25rem;
+  line-height:1.6;
+  white-space:nowrap;
+  color:var(--text);
   text-align:center;
-  font-family: 'Fira Mono', monospace;
+}
+
+/* FALLBACK MODES */
+.chord-block{
+  text-align:center;
+  font-family:'Fira Mono',monospace;
   margin-bottom:8px;
   font-size:1.05rem;
-  color: #7ad7ff;
+  color:#7ad7ff;
 }
-
-/* fallback lyrics row */
-.lyrics-row {
+.lyrics-row{
   font-size:1.12rem;
   line-height:1.6;
   text-align:center;
   color:var(--text);
 }
 
-/* footer */
-.footer{max-width:1200px;margin:28px auto;padding:0 16px;color:var(--muted);text-align:center}
-
-/* small helpers */
-kbd{background:rgba(0,0,0,0.08);padding:2px 6px;border-radius:6px}
+/* ================= FOOTER ================= */
+.footer{
+  max-width:1200px;
+  margin:28px auto;
+  padding:0 16px;
+  color:var(--muted);
+  text-align:center;
+}
