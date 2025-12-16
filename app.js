@@ -23,9 +23,14 @@ async function fetchJSON(path) {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200 || xhr.status === 0) {
-            try { resolve(JSON.parse(xhr.responseText)); }
-            catch (e) { reject(e); }
-          } else reject(xhr.status);
+            try {
+              resolve(JSON.parse(xhr.responseText));
+            } catch (e) {
+              reject(e);
+            }
+          } else {
+            reject(xhr.status);
+          }
         }
       };
       xhr.send();
@@ -38,8 +43,11 @@ async function fetchJSON(path) {
 ========================= */
 function applyThemeFromPref() {
   const saved = localStorage.getItem(THEME_KEY);
-  if (saved === 'dark') document.documentElement.classList.add('dark');
-  else document.documentElement.classList.remove('dark');
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
 }
 
 function toggleTheme() {
@@ -58,17 +66,23 @@ const FLAT_MAP = { Db:'C#', Eb:'D#', Gb:'F#', Ab:'G#', Bb:'A#' };
 
 function transposeChord(chord, steps) {
   if (!chord) return '';
+
   if (chord.includes('/')) {
     const [a, b] = chord.split('/');
     return `${transposeChord(a, steps)}/${transposeChord(b, steps)}`;
   }
+
   const m = chord.match(/^([A-G])([b#]?)(.*)$/);
   if (!m) return chord;
+
   let root = m[1] + (m[2] || '');
   let suffix = m[3] || '';
+
   if (FLAT_MAP[root]) root = FLAT_MAP[root];
+
   let idx = CHORDS.indexOf(root);
   if (idx === -1) return chord;
+
   idx = (idx + steps + 12) % 12;
   return CHORDS[idx] + suffix;
 }
@@ -136,8 +150,10 @@ let offset = 0;
 function initList(allSongs) {
   indexList = allSongs.slice();
   offset = 0;
+
   const songList = document.getElementById('song-list');
   if (!songList) return;
+
   songList.innerHTML = '';
   loadNextBatch();
 }
@@ -163,7 +179,8 @@ function loadNextBatch() {
     `;
 
     li.querySelector('.view-btn').onclick = () => {
-      window.location.href = `viewer.html?file=${encodeURIComponent(song.filename)}`;
+      window.location.href =
+        `viewer.html?file=${encodeURIComponent(song.filename)}`;
     };
 
     list.appendChild(li);
@@ -173,7 +190,7 @@ function loadNextBatch() {
 }
 
 /* =========================
-   VIEWER (SECTION + SWIPE ENABLED)
+   VIEWER
 ========================= */
 async function initViewer() {
   const params = new URLSearchParams(location.search);
@@ -190,22 +207,16 @@ async function initViewer() {
   }
 
   let transpose = 0;
-  let currentSectionIndex = 0;
-  const sectionBlocks = [];
 
   function render() {
     view.innerHTML = '';
-    sectionBlocks.length = 0;
 
     song.lines.forEach(line => {
-
-      // SECTION LABEL
       if (line.section) {
         const section = document.createElement('div');
         section.className = 'section-label';
         section.textContent = line.section;
         view.appendChild(section);
-        sectionBlocks.push(section);
       }
 
       const row = document.createElement('div');
@@ -237,71 +248,20 @@ async function initViewer() {
       view.appendChild(row);
     });
 
-    titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+    titleEl.textContent =
+      song.title + (song.key ? ` [${song.key}]` : '');
   }
 
-  function jumpToSection(index) {
-    if (!sectionBlocks[index]) return;
-    sectionBlocks[index].scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-    currentSectionIndex = index;
-  }
-
-  function applyOrientationMode() {
-    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
-    document.body.classList.toggle('section-mode', isPortrait);
-    document.body.classList.toggle('scroll-mode', !isPortrait);
-
-    if (isPortrait && sectionBlocks.length) {
-      jumpToSection(currentSectionIndex);
-    }
-  }
-
-  /* ---------- SWIPE HANDLING ---------- */
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  function handleSwipe() {
-    if (!document.body.classList.contains('section-mode')) return;
-
-    const diff = touchStartX - touchEndX;
-    const threshold = 50;
-
-    if (diff > threshold) {
-      jumpToSection(Math.min(currentSectionIndex + 1, sectionBlocks.length - 1));
-    } else if (diff < -threshold) {
-      jumpToSection(Math.max(currentSectionIndex - 1, 0));
-    }
-  }
-
-  view.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
-
-  view.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  }, { passive: true });
-
-  /* ---------- INIT ---------- */
   render();
-  applyOrientationMode();
-
-  window.addEventListener('resize', applyOrientationMode);
-  window.addEventListener('orientationchange', applyOrientationMode);
 
   document.getElementById('transpose-up')?.addEventListener('click', () => {
     transpose++;
     render();
-    applyOrientationMode();
   });
 
   document.getElementById('transpose-down')?.addEventListener('click', () => {
     transpose--;
     render();
-    applyOrientationMode();
   });
 }
 
@@ -331,7 +291,8 @@ function initMobileMenu() {
   });
 
   document.addEventListener('click', e => {
-    if (!mobilePanel.contains(e.target) && !hamburger.contains(e.target)) {
+    if (!mobilePanel.contains(e.target) &&
+        !hamburger.contains(e.target)) {
       close();
     }
   });
