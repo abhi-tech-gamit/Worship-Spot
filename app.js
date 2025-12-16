@@ -284,4 +284,46 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+   /* ---------------------------
+   Mobile hamburger toggle (POLISHED)
+--------------------------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const hamburger = document.getElementById('hamburger');
+  const mobilePanel = document.getElementById('mobile-panel');
+
+  if (!hamburger || !mobilePanel) return;
+
+  function openPanel() {
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobilePanel.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-open');
+  }
+
+  function closePanel() {
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobilePanel.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-open');
+  }
+
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+    isOpen ? closePanel() : openPanel();
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!mobilePanel.contains(e.target) && !hamburger.contains(e.target)) {
+      closePanel();
+    }
+  });
+
+  // Close on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePanel();
+  });
+
+  // Auto-close when user interacts inside panel (search / filter)
+  mobilePanel.addEventListener('input', closePanel);
+});
 }
