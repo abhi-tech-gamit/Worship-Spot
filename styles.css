@@ -634,4 +634,29 @@ body.view-musician .chord{
   font-size:1.35rem;
   color:#7dd3fc;
 }
+/* ================= SECTION LABELS ================= */
+
+.section-label{
+  margin: 28px 0 12px;
+  text-align: center;
+  font-weight: 800;
+  font-size: .85rem;
+  letter-spacing: .18em;
+  color: var(--muted);
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+/* Everyone (lyrics reading) */
+body.view-everyone .section-label{
+  font-size: .8rem;
+  opacity: .6;
+}
+
+/* Musicians (clarity on stage) */
+body.view-musician .section-label{
+  font-size: .9rem;
+  opacity: .9;
+}
+
 
