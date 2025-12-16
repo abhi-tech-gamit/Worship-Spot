@@ -7,34 +7,28 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <header class="viewer-header">
-  <a href="index.html" class="back">← Back</a>
-  <div id="song-title" class="viewer-title">Loading…</div>
+  <a href="index.html" class="back" aria-label="Back to song list">← Back</a>
+
+  <div id="song-title" class="viewer-title" aria-live="polite">
+    Loading…
+  </div>
+
   <div class="viewer-controls">
-    <button id="transpose-down" class="small-btn" title="Transpose down">–</button>
-    <button id="transpose-up" class="small-btn" title="Transpose up">+</button>
-    /* Viewer header layout */
-.viewer-header{
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  padding: 0 12px;
-}
+    <button
+      id="transpose-down"
+      class="small-btn"
+      title="Transpose down"
+      aria-label="Transpose down"
+    >–</button>
 
-.viewer-header .back{
-  justify-self: start;
-  min-width: 44px;   /* touch-safe */
-}
-
-.viewer-title{
-  justify-self: center;
-  text-align: center;
-}
-
-.viewer-controls{
-  justify-self: end;
-}
-
+    <button
+      id="transpose-up"
+      class="small-btn"
+      title="Transpose up"
+      aria-label="Transpose up"
+    >+</button>
   </div>
 </header>
 
