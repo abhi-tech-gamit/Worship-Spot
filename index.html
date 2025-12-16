@@ -11,7 +11,14 @@
 <header class="topbar" role="banner">
   <div class="topbar-inner">
     <div class="left">
-      <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+      <button
+        id="hamburger"
+        class="hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-panel"
+      >☰</button>
+
       <a class="logo" href="#">Worship <strong>SPOT</strong></a>
     </div>
 
@@ -49,14 +56,15 @@
   <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
     <div class="mobile-controls">
       <div class="mobile-row">
-        <!-- SAME CLASS = JS WORKS -->
         <input
           id="mobile-search"
           class="search-input"
           type="search"
           placeholder="Search songs..."
+          aria-label="Search songs"
         >
       </div>
+
       <div class="mobile-row">
         <div class="lang-filters">
           <button class="lang-filter active" data-lang="all">All</button>
