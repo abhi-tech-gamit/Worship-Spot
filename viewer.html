@@ -18,13 +18,13 @@
 
   <div class="viewer-controls">
 
-    <!-- View Toggle -->
+    <!-- Everyone / Musicians Toggle -->
     <div class="view-toggle">
       <button data-view="everyone">Everyone</button>
       <button data-view="musician">Musicians</button>
     </div>
 
-    <!-- Transpose Controls -->
+    <!-- Transpose Buttons -->
     <button
       id="transpose-down"
       class="small-btn"
@@ -48,7 +48,7 @@
   <small>© 2025 Worship SPOT</small>
 </footer>
 
-<!-- View Toggle Logic -->
+<!-- Toggle Logic (DO NOT MOVE) -->
 <script>
   document.addEventListener('click', function (e) {
     const btn = e.target.closest('.view-toggle button');
