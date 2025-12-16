@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lyrics Combiner — Worship SPOT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="combiner-page">
+
+<header class="viewer-header">
+  <a href="index.html" class="back">← Back</a>
+
+  <div class="viewer-title">
+    Lyrics Combiner
+  </div>
+
+  <div class="viewer-controls">
+    <button class="small-btn" disabled>Export JSON</button>
+    <button class="small-btn" disabled>Export Image</button>
+  </div>
+</header>
+
+<main class="combiner-layout">
+
+  <!-- LEFT: SONG & SECTIONS -->
+  <aside class="combiner-left">
+    <h3>Base Song</h3>
+
+    <select class="combiner-select">
+      <option>Select a song</option>
+    </select>
+
+    <div class="combiner-sections">
+      <!-- Sections will appear here -->
+      <p class="muted">Select a song to see sections</p>
+    </div>
+  </aside>
+
+  <!-- CENTER: EDITOR -->
+  <section class="combiner-editor">
+    <h3>Editor</h3>
+    <div class="editor-placeholder">
+      Select a song to start editing
+    </div>
+  </section>
+
+  <!-- RIGHT: PREVIEW -->
+  <section class="combiner-preview">
+    <h3>Live Preview</h3>
+    <div class="song-view">
+      Preview will appear here
+    </div>
+  </section>
+
+</main>
+
+<script src="combiner.js"></script>
+</body>
+</html>
