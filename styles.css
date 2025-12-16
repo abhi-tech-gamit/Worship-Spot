@@ -626,14 +626,15 @@ body.view-musician .chord{
 }
 
 body.view-musician .word{
-  font-size:1.9rem;
+  font-size:1.65rem;   /* ↓ slightly smaller, still readable on stage */
   font-weight:600;
 }
 
 body.view-musician .chord{
-  font-size:1.35rem;
+  font-size:1.2rem;    /* ↓ cleaner, less clutter */
   color:#7dd3fc;
 }
+
 /* ================= SECTION LABELS ================= */
 
 .section-label{
