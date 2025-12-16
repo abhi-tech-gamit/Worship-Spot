@@ -173,7 +173,7 @@ function loadNextBatch() {
 }
 
 /* =========================
-   VIEWER
+   VIEWER (SECTION + SWIPE ENABLED)
 ========================= */
 async function initViewer() {
   const params = new URLSearchParams(location.search);
@@ -190,17 +190,22 @@ async function initViewer() {
   }
 
   let transpose = 0;
+  let currentSectionIndex = 0;
+  const sectionBlocks = [];
 
   function render() {
     view.innerHTML = '';
+    sectionBlocks.length = 0;
 
     song.lines.forEach(line => {
 
+      // SECTION LABEL
       if (line.section) {
         const section = document.createElement('div');
         section.className = 'section-label';
         section.textContent = line.section;
         view.appendChild(section);
+        sectionBlocks.push(section);
       }
 
       const row = document.createElement('div');
@@ -235,16 +240,68 @@ async function initViewer() {
     titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
   }
 
+  function jumpToSection(index) {
+    if (!sectionBlocks[index]) return;
+    sectionBlocks[index].scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+    currentSectionIndex = index;
+  }
+
+  function applyOrientationMode() {
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    document.body.classList.toggle('section-mode', isPortrait);
+    document.body.classList.toggle('scroll-mode', !isPortrait);
+
+    if (isPortrait && sectionBlocks.length) {
+      jumpToSection(currentSectionIndex);
+    }
+  }
+
+  /* ---------- SWIPE HANDLING ---------- */
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function handleSwipe() {
+    if (!document.body.classList.contains('section-mode')) return;
+
+    const diff = touchStartX - touchEndX;
+    const threshold = 50;
+
+    if (diff > threshold) {
+      jumpToSection(Math.min(currentSectionIndex + 1, sectionBlocks.length - 1));
+    } else if (diff < -threshold) {
+      jumpToSection(Math.max(currentSectionIndex - 1, 0));
+    }
+  }
+
+  view.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  view.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  /* ---------- INIT ---------- */
   render();
+  applyOrientationMode();
+
+  window.addEventListener('resize', applyOrientationMode);
+  window.addEventListener('orientationchange', applyOrientationMode);
 
   document.getElementById('transpose-up')?.addEventListener('click', () => {
     transpose++;
     render();
+    applyOrientationMode();
   });
 
   document.getElementById('transpose-down')?.addEventListener('click', () => {
     transpose--;
     render();
+    applyOrientationMode();
   });
 }
 
