@@ -695,4 +695,42 @@ body.section-mode .section-nav{
   scroll-margin-top:90px;
 }
 
+/* ================= COMBINER ================= */
+
+.combiner-layout{
+  display:grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap:24px;
+  max-width:1400px;
+  margin:24px auto;
+  padding:0 16px;
+}
+
+.combiner-editor{
+  border:1px solid var(--border-light);
+  border-radius:var(--radius);
+  padding:16px;
+  background:var(--surface);
+}
+
+.combiner-preview{
+  border:1px solid var(--border-light);
+  border-radius:var(--radius);
+  padding:16px;
+  background:var(--surface);
+}
+
+#lyrics-editor textarea{
+  width:100%;
+  min-height:80px;
+  margin-bottom:12px;
+  font-size:1rem;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .combiner-layout{
+    grid-template-columns:1fr;
+  }
+}
 
