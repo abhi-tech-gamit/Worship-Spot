@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Viewer — Worship SPOT</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Viewer — Worship SPOT</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+
+<body class="view-everyone">
 
 <header class="viewer-header">
   <a href="index.html" class="back" aria-label="Back to song list">← Back</a>
@@ -16,6 +17,14 @@
   </div>
 
   <div class="viewer-controls">
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button data-view="everyone">Everyone</button>
+      <button data-view="musician">Musicians</button>
+    </div>
+
+    <!-- Transpose Controls -->
     <button
       id="transpose-down"
       class="small-btn"
@@ -29,6 +38,7 @@
       title="Transpose up"
       aria-label="Transpose up"
     >+</button>
+
   </div>
 </header>
 
@@ -38,6 +48,18 @@
   <small>© 2025 Worship SPOT</small>
 </footer>
 
+<!-- View Toggle Logic -->
+<script>
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.view-toggle button');
+    if (!btn) return;
+
+    document.body.classList.remove('view-everyone', 'view-musician');
+    document.body.classList.add('view-' + btn.dataset.view);
+  });
+</script>
+
 <script type="module" src="app.js"></script>
+
 </body>
 </html>
