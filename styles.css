@@ -526,5 +526,49 @@ a{color:inherit;text-decoration:none}
     height: 48px;
   }
 }
+   /* ================= POLISH: MOBILE PANEL UX ================= */
+
+/* Prevent background scroll when menu is open */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* Ensure hamburger is only controlled by media queries */
+.hamburger {
+  display: none;
+}
+
+/* Mobile-only UI behavior */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .lang-filters-desktop {
+    display: none;
+  }
+
+  .center {
+    display: none;
+  }
+}
+
+/* Smooth mobile panel appearance (no JS animation) */
+.mobile-panel {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-panel[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.mobile-panel[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
 
 }
