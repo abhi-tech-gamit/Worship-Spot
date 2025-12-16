@@ -255,36 +255,6 @@ if (location.pathname.endsWith('viewer.html')) {
     });
   })();
    /* ---------------------------
-   Mobile hamburger toggle
---------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const hamburger = document.getElementById('hamburger');
-  const mobilePanel = document.getElementById('mobile-panel');
-
-  if (!hamburger || !mobilePanel) return;
-
-  function closePanel() {
-    mobilePanel.setAttribute('aria-hidden', 'true');
-    hamburger.setAttribute('aria-expanded', 'false');
-  }
-
-  hamburger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
-
-    hamburger.setAttribute('aria-expanded', String(!isOpen));
-    mobilePanel.setAttribute('aria-hidden', String(isOpen));
-  });
-
-  // Close when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!mobilePanel.contains(e.target) && !hamburger.contains(e.target)) {
-      closePanel();
-    }
-  });
-});
-
-   /* ---------------------------
    Mobile hamburger toggle (POLISHED)
 --------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
