@@ -220,7 +220,6 @@ a{color:inherit;text-decoration:none}
   display:grid;
   grid-template-columns: auto 1fr auto;
   align-items:center;
-  position:relative;
   padding: 0 12px;
   border-bottom:2px solid var(--border-color);
   background: var(--surface);
@@ -361,109 +360,136 @@ a{color:inherit;text-decoration:none}
 
 /* ================= MOBILE OPTIMIZATIONS ================= */
 
-/* Tablets and smaller */
-@media(max-width:768px){
+/* ---------- Tablets and smaller ---------- */
+@media (max-width: 768px){
   .song-grid{
     grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
     gap:16px;
   }
-  
+
   .card{
     padding:20px;
   }
-  
+
   .title{
     font-size:1.2rem;
   }
-  
+
   .viewer-title{
     font-size:1.3rem;
   }
+
+  /* Header behavior */
+  .hamburger{
+    display:flex;
+  }
+
+  .lang-filters-desktop{
+    display:none;
+  }
+
+  .center{
+    display:none;
+  }
 }
 
-/* Mobile phones */
-@media(max-width:480px){
+/* ---------- Mobile phones ---------- */
+@media (max-width: 480px){
   :root{
-    --base-font:16px; /* Smaller base font for mobile */
+    --base-font:16px;
   }
-  
+
   .topbar-inner{
     padding:0 12px;
+    height:48px;
   }
-  
+
   .search-wrap{
-    padding:16px 12px;
+    padding:10px 10px;
+    border-bottom:none;
   }
-  
+
   .main{
     padding:0 8px;
     margin:16px auto;
   }
-  
+
   .song-grid{
-    grid-template-columns:1fr; /* Single column on mobile */
+    grid-template-columns:1fr;
     gap:12px;
   }
-  
+
   .card{
     padding:16px;
   }
-  
+
   .title{
     font-size:1.1rem;
   }
-  
+
   .meta{
     font-size:0.9rem;
   }
-  
+
   .view-btn{
     padding:12px 20px;
     font-size:1rem;
   }
-  
+
+  /* -------- Viewer header (STACKED) -------- */
   .viewer-header{
-    height:56px;
+    height:auto;
+    grid-template-columns:1fr;
+    row-gap:8px;
+    padding:8px 12px;
   }
-  
-  .viewer-title{
-    font-size:1.2rem;
-    padding:8px 16px;
-  }
-  
-  .viewer-controls{
-    gap:8px;
-    right:12px;
-  }
-  
-  .viewer-controls button{
+
+  .viewer-header .back{
+    justify-self:start;
     min-width:44px;
-    min-height:44px;
-    font-size:1.1rem;
   }
-  
+
+  .viewer-title{
+    justify-self:start;
+    text-align:left;
+    font-size:1.2rem;
+    padding:6px 10px;
+  }
+
+  .viewer-controls{
+    justify-self:start;
+    gap:8px;
+  }
+
+  /* -------- Lyrics -------- */
   .song-view{
     margin:20px auto;
     padding:8px 16px;
   }
-  
+
   .lyric-line{
     margin-bottom:6px;
   }
-  
+
+  .lyric-pairs{
+    white-space:normal;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
   .chord{
     font-size:1.1rem;
   }
-  
+
   .word{
     font-size:1.3rem;
   }
-  
+
   .lyric-pair{
     min-width:2.8em;
     margin-right:0.4em;
   }
-  
+
   .footer{
     margin:24px auto;
     padding:16px;
@@ -471,98 +497,47 @@ a{color:inherit;text-decoration:none}
   }
 }
 
-/* Very small screens */
-@media(max-width:360px){
+/* ---------- Very small screens ---------- */
+@media (max-width: 360px){
   .chord{
     font-size:1rem;
   }
-  
+
   .word{
     font-size:1.2rem;
   }
-  
+
   .lyric-pair{
     min-width:2.6em;
     margin-right:0.3em;
   }
-
-   /* ================= REQUIRED MOBILE FIXES (ADD ONLY) ================= */
-
-/* Enable hamburger + hide desktop-only UI */
-@media (max-width: 768px) {
-  .hamburger {
-    display: flex;
-  }
-
-  .lang-filters-desktop {
-    display: none;
-  }
-
-  .center {
-    display: none;
-  }
 }
 
-/* Fix lyrics horizontal scrolling on phones */
-@media (max-width: 480px) {
-  .lyric-pairs {
-    white-space: normal;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .search-wrap {
-    padding: 10px 10px;
-    border-bottom: none;
-  }
-
-  .topbar-inner {
-    height: 48px;
-  }
-}
-   /* ================= POLISH: MOBILE PANEL UX ================= */
-
-/* Prevent background scroll when menu is open */
-body.menu-open {
-  overflow: hidden;
+/* ---------- Mobile panel polish ---------- */
+body.menu-open{
+  overflow:hidden;
 }
 
-/* Ensure hamburger is only controlled by media queries */
-.hamburger {
-  display: none;
+.hamburger{
+  display:none;
 }
 
-/* Mobile-only UI behavior */
-@media (max-width: 768px) {
-  .hamburger {
-    display: flex;
-  }
-
-  .lang-filters-desktop {
-    display: none;
-  }
-
-  .center {
-    display: none;
-  }
+.mobile-panel{
+  transition:opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* Smooth mobile panel appearance (no JS animation) */
-.mobile-panel {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+.mobile-panel[aria-hidden="true"]{
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-8px);
 }
 
-.mobile-panel[aria-hidden="true"] {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-8px);
+.mobile-panel[aria-hidden="false"]{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
 }
 
-.mobile-panel[aria-hidden="false"] {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
 
 
 }
