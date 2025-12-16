@@ -1,12 +1,15 @@
-// app.js — Worship SPOT (FULLY FIXED, COPY-PASTE READY)
+// app.js — Worship SPOT (FULL FIXED VERSION)
 
+/* =========================
+   CONSTANTS
+========================= */
 const BATCH = 20;
 const FILTER_LANG_KEY = 'worship_filter_lang';
 const THEME_KEY = 'worship_theme';
 
-/* ---------------------------
-   Robust JSON fetch
---------------------------- */
+/* =========================
+   ROBUST JSON FETCH
+========================= */
 async function fetchJSON(path) {
   try {
     const res = await fetch(path);
@@ -30,9 +33,9 @@ async function fetchJSON(path) {
   }
 }
 
-/* ---------------------------
-   Theme
---------------------------- */
+/* =========================
+   THEME
+========================= */
 function applyThemeFromPref() {
   const saved = localStorage.getItem(THEME_KEY);
   if (saved === 'dark') document.documentElement.classList.add('dark');
@@ -47,9 +50,9 @@ function toggleTheme() {
   );
 }
 
-/* ---------------------------
-   Transpose helpers
---------------------------- */
+/* =========================
+   TRANSPOSE HELPERS
+========================= */
 const CHORDS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_MAP = { Db:'C#', Eb:'D#', Gb:'F#', Ab:'G#', Bb:'A#' };
 
@@ -70,74 +73,63 @@ function transposeChord(chord, steps) {
   return CHORDS[idx] + suffix;
 }
 
-/* ---------------------------
-   Search functionality
---------------------------- */
+/* =========================
+   SEARCH
+========================= */
 function setupSearch() {
-  // Find existing search input by class (as styled in CSS)
   const searchInput = document.querySelector('.search-input');
-  
-  if (searchInput) {
-    // Remove any duplicate search inputs that might exist
-    const allSearchInputs = document.querySelectorAll('input[type="search"]');
-    allSearchInputs.forEach(input => {
-      if (input !== searchInput) {
-        // Remove the parent container of duplicate search inputs
-        const parentContainer = input.closest('.search-container');
-        if (parentContainer) {
-          parentContainer.remove();
-        } else {
-          input.remove();
-        }
-      }
-    });
-    
-    // Add event listener to the existing search input
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      filterSongs(query);
-    });
-  }
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    filterSongs(q);
+  });
 }
 
 function filterSongs(query) {
   if (!window.__ALL_SONGS) return;
-  
+
   const filtered = window.__ALL_SONGS.filter(song => {
     if (!query) return true;
-    
-    const titleMatch = song.title && song.title.toLowerCase().includes(query);
-    const artistMatch = song.artist && song.artist.toLowerCase().includes(query);
-    const keyMatch = song.key && song.key.toLowerCase().includes(query);
-    
-    return titleMatch || artistMatch || keyMatch;
+    return (
+      song.title?.toLowerCase().includes(query) ||
+      song.artist?.toLowerCase().includes(query) ||
+      song.key?.toLowerCase().includes(query)
+    );
   });
-  
+
   initList(filtered);
 }
 
-/* ---------------------------
-   Init
---------------------------- */
+/* =========================
+   INIT (RUNS ON ALL PAGES)
+========================= */
 document.addEventListener('DOMContentLoaded', async () => {
   applyThemeFromPref();
 
   const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) themeBtn.onclick = toggleTheme;
 
-  const songs = await fetchJSON('songs.json').catch(() => []);
-  window.__ALL_SONGS = Array.isArray(songs) ? songs : [];
-  
-  // Setup search functionality
-  setupSearch();
-  
-  // Initialize the list with all songs
-  initList(window.__ALL_SONGS);
+  // SONG LIST PAGE
+  if (document.getElementById('song-list')) {
+    const songs = await fetchJSON('songs.json').catch(() => []);
+    window.__ALL_SONGS = Array.isArray(songs) ? songs : [];
+    setupSearch();
+    initList(window.__ALL_SONGS);
+  }
+
+  // VIEWER PAGE
+  if (location.pathname.endsWith('viewer.html')) {
+    initViewer();
+  }
+
+  // MOBILE MENU
+  initMobileMenu();
 });
 
-/* ---------------------------
-   Song List
---------------------------- */
+/* =========================
+   SONG LIST
+========================= */
 let indexList = [];
 let offset = 0;
 
@@ -145,16 +137,15 @@ function initList(allSongs) {
   indexList = allSongs.slice();
   offset = 0;
   const songList = document.getElementById('song-list');
-  if (songList) {
-    songList.innerHTML = '';
-    loadNextBatch();
-  }
+  if (!songList) return;
+  songList.innerHTML = '';
+  loadNextBatch();
 }
 
 function loadNextBatch() {
   const list = document.getElementById('song-list');
   if (!list) return;
-  
+
   const batch = indexList.slice(offset, offset + BATCH);
 
   batch.forEach(song => {
@@ -165,10 +156,6 @@ function loadNextBatch() {
       <div class="card-head">
         <div class="title">${song.title}</div>
         <div class="meta">${song.artist || ''}</div>
-        <div class="lang-badge">${(song.language || 'en').toUpperCase()}</div>
-      </div>
-      <div class="badges">
-        ${song.key ? `<div class="key-pill">Key: ${song.key}</div>` : ''}
       </div>
       <div class="card-actions">
         <button class="view-btn">View</button>
@@ -185,43 +172,40 @@ function loadNextBatch() {
   offset += batch.length;
 }
 
-/* ---------------------------
-   Viewer
---------------------------- */
-if (location.pathname.endsWith('viewer.html')) {
-  (async () => {
-    const params = new URLSearchParams(location.search);
-    const file = params.get('file');
-    const view = document.getElementById('song-view');
-    const titleEl = document.getElementById('song-title');
+/* =========================
+   VIEWER
+========================= */
+async function initViewer() {
+  const params = new URLSearchParams(location.search);
+  const file = params.get('file');
+  const view = document.getElementById('song-view');
+  const titleEl = document.getElementById('song-title');
 
-    if (!file || !view) return;
+  if (!file || !view) return;
 
-    const song = await fetchJSON(file).catch(() => null);
-    if (!song) {
-      view.textContent = 'Failed to load song';
-      return;
-    }
+  const song = await fetchJSON(file).catch(() => null);
+  if (!song) {
+    view.textContent = 'Failed to load song';
+    return;
+  }
 
-    let transpose = 0;
+  let transpose = 0;
 
-    function render() {
-  view.innerHTML = '';
+  function render() {
+    view.innerHTML = '';
 
-  song.lines.forEach(line => {
+    song.lines.forEach(line => {
 
-    /* ===== SHOW SECTION (VERSE / CHORUS) ===== */
-    if (line.section) {
-      const section = document.createElement('div');
-      section.className = 'section-label';
-      section.textContent = line.section;
-      view.appendChild(section);
-    }
+      if (line.section) {
+        const section = document.createElement('div');
+        section.className = 'section-label';
+        section.textContent = line.section;
+        view.appendChild(section);
+      }
 
-    const row = document.createElement('div');
-    row.className = 'lyric-line';
+      const row = document.createElement('div');
+      row.className = 'lyric-line';
 
-    if (Array.isArray(line.chords) && Array.isArray(line.lyrics)) {
       const wrap = document.createElement('div');
       wrap.className = 'lyric-pairs';
 
@@ -245,56 +229,57 @@ if (location.pathname.endsWith('viewer.html')) {
       });
 
       row.appendChild(wrap);
-    }
+      view.appendChild(row);
+    });
 
-    view.appendChild(row);
-  });
-
-  if (titleEl) {
     titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
   }
+
+  render();
+
+  document.getElementById('transpose-up')?.addEventListener('click', () => {
+    transpose++;
+    render();
+  });
+
+  document.getElementById('transpose-down')?.addEventListener('click', () => {
+    transpose--;
+    render();
+  });
 }
 
-   /* ---------------------------
-   Mobile hamburger toggle (POLISHED)
---------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
+/* =========================
+   MOBILE MENU
+========================= */
+function initMobileMenu() {
   const hamburger = document.getElementById('hamburger');
   const mobilePanel = document.getElementById('mobile-panel');
-
   if (!hamburger || !mobilePanel) return;
 
-  function openPanel() {
+  function open() {
     hamburger.setAttribute('aria-expanded', 'true');
     mobilePanel.setAttribute('aria-hidden', 'false');
     document.body.classList.add('menu-open');
   }
 
-  function closePanel() {
+  function close() {
     hamburger.setAttribute('aria-expanded', 'false');
     mobilePanel.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('menu-open');
   }
 
-  hamburger.addEventListener('click', (e) => {
+  hamburger.addEventListener('click', e => {
     e.stopPropagation();
-    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
-    isOpen ? closePanel() : openPanel();
+    hamburger.getAttribute('aria-expanded') === 'true' ? close() : open();
   });
 
-  // Close on outside click
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     if (!mobilePanel.contains(e.target) && !hamburger.contains(e.target)) {
-      closePanel();
+      close();
     }
   });
 
-  // Close on ESC key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePanel();
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
   });
-
-  // Auto-close when user interacts inside panel (search / filter)
-  mobilePanel.addEventListener('input', closePanel);
-});
 }
