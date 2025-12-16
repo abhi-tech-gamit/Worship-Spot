@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <header class="topbar" role="banner">
   <div class="topbar-inner">
     <div class="left">
@@ -15,13 +16,19 @@
     </div>
 
     <div class="center">
-      <div class="search-wrap" id="search-wrap">
-        <input id="search-input" class="search-input" type="search" placeholder="Search songs, artists, tags — / to focus" aria-label="Search songs">
+      <div class="search-wrap">
+        <input
+          id="search-input"
+          class="search-input"
+          type="search"
+          placeholder="Search songs, artists, tags — / to focus"
+          aria-label="Search songs"
+        >
       </div>
     </div>
 
     <div class="right">
-      <div class="lang-filters-desktop" aria-hidden="false">
+      <div class="lang-filters-desktop">
         <button class="lang-filter active" data-lang="all">All</button>
         <button class="lang-filter" data-lang="en">English</button>
         <button class="lang-filter" data-lang="hi">हिन्दी</button>
@@ -38,10 +45,17 @@
     </div>
   </div>
 
+  <!-- MOBILE PANEL -->
   <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
     <div class="mobile-controls">
       <div class="mobile-row">
-        <input id="mobile-search" type="search" placeholder="Search songs..." />
+        <!-- SAME CLASS = JS WORKS -->
+        <input
+          id="mobile-search"
+          class="search-input"
+          type="search"
+          placeholder="Search songs..."
+        >
       </div>
       <div class="mobile-row">
         <div class="lang-filters">
@@ -59,11 +73,10 @@
   <section class="panel">
     <div class="panel-head">
       <h1 class="page-title">Songs</h1>
-      <p class="muted" id="panel-desc">Click a song to open the viewer (transpose available).</p>
+      <p class="muted">Click a song to open the viewer (transpose available).</p>
     </div>
 
     <ul id="song-list" class="song-grid" aria-live="polite"></ul>
-
     <div id="loading" class="loading">Loading…</div>
   </section>
 </main>
