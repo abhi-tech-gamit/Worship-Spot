@@ -570,3 +570,68 @@ body.menu-open{
   transform:translateY(0);
 }
 }
+
+/* ================= VIEW TOGGLE ================= */
+
+.view-toggle{
+  display:flex;
+  gap:6px;
+  margin-right:12px;
+}
+
+.view-toggle button{
+  font-size:.75rem;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid var(--border-light);
+  background:transparent;
+  color:var(--text);
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.view-toggle button:hover{
+  background:rgba(0,119,255,.12);
+}
+
+body.view-everyone .view-toggle button[data-view="everyone"],
+body.view-musician .view-toggle button[data-view="musician"]{
+  background:linear-gradient(90deg,var(--accent1),var(--accent3));
+  color:white;
+  border:none;
+}
+
+/* ================= CONTENT VISIBILITY ================= */
+
+/* Everyone = LYRICS ONLY */
+body.view-everyone .chord,
+body.view-everyone .chord-block{
+  display:none;
+}
+
+body.view-everyone .lyric-pair{
+  min-width:auto;
+  margin-right:.6em;
+}
+
+body.view-everyone .word{
+  font-size:1.55rem;
+  font-weight:500;
+  letter-spacing:.03em;
+}
+
+/* Musicians = LYRICS + CHORDS */
+body.view-musician .chord{
+  display:block;
+}
+
+body.view-musician .word{
+  font-size:1.9rem;
+  font-weight:600;
+}
+
+body.view-musician .chord{
+  font-size:1.35rem;
+  color:#7dd3fc;
+}
+
