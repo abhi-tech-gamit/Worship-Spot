@@ -25,5 +25,12 @@
   "language": "hi",
   "key": "Am"
 }
-
+ {
+  "title": "Stuti Aradhana Uper Jati Hai",
+  "artist": "Unknown",
+  "filename": "songs/05_Stuti_Aradhana.json",
+  "tags": ["worship", "hindi", "victory"],
+  "language": "hi",
+  "key": "G"
+}
 ]
