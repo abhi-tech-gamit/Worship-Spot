@@ -206,54 +206,55 @@ if (location.pathname.endsWith('viewer.html')) {
     let transpose = 0;
 
     function render() {
-      view.innerHTML = '';
-      song.lines.forEach(line => {
-        const row = document.createElement('div');
-        row.className = 'lyric-line';
+  view.innerHTML = '';
 
-        if (Array.isArray(line.chords) && Array.isArray(line.lyrics)) {
-          const wrap = document.createElement('div');
-          wrap.className = 'lyric-pairs';
+  song.lines.forEach(line => {
 
-          line.lyrics.forEach((word, i) => {
-            const pair = document.createElement('div');
-            pair.className = 'lyric-pair';
-
-            const c = document.createElement('div');
-            c.className = 'chord';
-            c.textContent = line.chords[i]
-              ? transposeChord(line.chords[i], transpose)
-              : '';
-
-            const w = document.createElement('div');
-            w.className = 'word';
-            w.textContent = word;
-
-            pair.appendChild(c);
-            pair.appendChild(w);
-            wrap.appendChild(pair);
-          });
-
-          row.appendChild(wrap);
-        }
-
-        view.appendChild(row);
-      });
-
-      if (titleEl) {
-        titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
-      }
+    /* ===== SHOW SECTION (VERSE / CHORUS) ===== */
+    if (line.section) {
+      const section = document.createElement('div');
+      section.className = 'section-label';
+      section.textContent = line.section;
+      view.appendChild(section);
     }
 
-    render();
+    const row = document.createElement('div');
+    row.className = 'lyric-line';
 
-    document.getElementById('transpose-up')?.addEventListener('click', () => {
-      transpose++; render();
-    });
-    document.getElementById('transpose-down')?.addEventListener('click', () => {
-      transpose--; render();
-    });
-  })();
+    if (Array.isArray(line.chords) && Array.isArray(line.lyrics)) {
+      const wrap = document.createElement('div');
+      wrap.className = 'lyric-pairs';
+
+      line.lyrics.forEach((word, i) => {
+        const pair = document.createElement('div');
+        pair.className = 'lyric-pair';
+
+        const c = document.createElement('div');
+        c.className = 'chord';
+        c.textContent = line.chords[i]
+          ? transposeChord(line.chords[i], transpose)
+          : '';
+
+        const w = document.createElement('div');
+        w.className = 'word';
+        w.textContent = word;
+
+        pair.appendChild(c);
+        pair.appendChild(w);
+        wrap.appendChild(pair);
+      });
+
+      row.appendChild(wrap);
+    }
+
+    view.appendChild(row);
+  });
+
+  if (titleEl) {
+    titleEl.textContent = song.title + (song.key ? ` [${song.key}]` : '');
+  }
+}
+
    /* ---------------------------
    Mobile hamburger toggle (POLISHED)
 --------------------------- */
