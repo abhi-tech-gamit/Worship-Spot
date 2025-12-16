@@ -1,61 +1,165 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lyrics Combiner — Worship SPOT</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lyrics Combiner — Worship SPOT</title>
+
+<link rel="stylesheet" href="styles.css">
+<style>
+  .combiner-layout{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    margin-top:24px;
+  }
+
+  .panel-box{
+    border:1px solid var(--border-color);
+    border-radius:12px;
+    padding:16px;
+    background:var(--surface);
+  }
+
+  .section-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 12px;
+    border:1px solid var(--border-light);
+    border-radius:8px;
+    margin-bottom:8px;
+  }
+
+  .section-item button{
+    padding:4px 10px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    background:var(--accent1);
+    color:white;
+  }
+
+  .combined-section{
+    margin-bottom:16px;
+  }
+
+  .combined-section h4{
+    margin-bottom:6px;
+    font-size:.85rem;
+    color:var(--muted);
+    letter-spacing:.1em;
+  }
+</style>
 </head>
 
-<body class="combiner-page">
+<body>
 
 <header class="viewer-header">
   <a href="index.html" class="back">← Back</a>
-
-  <div class="viewer-title">
-    Lyrics Combiner
-  </div>
-
-  <div class="viewer-controls">
-    <button class="small-btn" disabled>Export JSON</button>
-    <button class="small-btn" disabled>Export Image</button>
-  </div>
+  <div class="viewer-title">Lyrics Combiner</div>
 </header>
 
-<main class="combiner-layout">
+<main class="main">
 
-  <!-- LEFT: SONG & SECTIONS -->
-  <aside class="combiner-left">
-    <h3>Base Song</h3>
-
-    <select class="combiner-select">
-      <option>Select a song</option>
+  <!-- SONG SELECTOR -->
+  <div class="panel-box">
+    <label><strong>Select Song</strong></label>
+    <select id="songSelect" style="width:100%;padding:10px;margin-top:8px;">
+      <option value="">-- Select a song --</option>
     </select>
+  </div>
 
-    <div class="combiner-sections">
-      <!-- Sections will appear here -->
-      <p class="muted">Select a song to see sections</p>
-    </div>
-  </aside>
+  <!-- COMBINER -->
+  <div class="combiner-layout">
 
-  <!-- CENTER: EDITOR -->
-  <section class="combiner-editor">
-    <h3>Editor</h3>
-    <div class="editor-placeholder">
-      Select a song to start editing
+    <!-- LEFT: SOURCE SECTIONS -->
+    <div class="panel-box">
+      <h3>Song Sections</h3>
+      <div id="sectionList"></div>
     </div>
-  </section>
 
-  <!-- RIGHT: PREVIEW -->
-  <section class="combiner-preview">
-    <h3>Live Preview</h3>
-    <div class="song-view">
-      Preview will appear here
+    <!-- RIGHT: COMBINED SONG -->
+    <div class="panel-box">
+      <h3>Combined Song</h3>
+      <div id="combinedOutput"></div>
     </div>
-  </section>
+
+  </div>
 
 </main>
 
-<script src="combiner.js"></script>
+<script type="module">
+import { fetchJSON } from './app.js'; // reuse logic if exported, else inline
+
+let songs = [];
+let currentSong = null;
+let combined = [];
+
+async function init(){
+  songs = await fetch('songs.json').then(r=>r.json());
+  const select = document.getElementById('songSelect');
+
+  songs.forEach((s,i)=>{
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = s.title;
+    select.appendChild(opt);
+  });
+
+  select.onchange = () => loadSong(select.value);
+}
+
+function loadSong(index){
+  currentSong = songs[index];
+  combined = [];
+  renderSections();
+  renderCombined();
+}
+
+function renderSections(){
+  const box = document.getElementById('sectionList');
+  box.innerHTML = '';
+
+  currentSong.lines.forEach(line=>{
+    if(!line.section) return;
+
+    const div = document.createElement('div');
+    div.className = 'section-item';
+
+    div.innerHTML = `
+      <span>${line.section}</span>
+      <button>+</button>
+    `;
+
+    div.querySelector('button').onclick = ()=>{
+      combined.push(line);
+      renderCombined();
+    };
+
+    box.appendChild(div);
+  });
+}
+
+function renderCombined(){
+  const out = document.getElementById('combinedOutput');
+  out.innerHTML = '';
+
+  combined.forEach(block=>{
+    const sec = document.createElement('div');
+    sec.className = 'combined-section';
+
+    sec.innerHTML = `
+      <h4>${block.section}</h4>
+      <div>${block.lyrics.join(' ')}</div>
+    `;
+
+    out.appendChild(sec);
+  });
+}
+
+init();
+</script>
+
 </body>
 </html>
