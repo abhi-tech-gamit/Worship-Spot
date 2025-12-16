@@ -659,5 +659,40 @@ body.view-musician .section-label{
   font-size: .9rem;
   opacity: .9;
 }
+/* ================= SECTION MODE ================= */
+
+/* Hide section nav in landscape */
+.section-nav{
+  display:none;
+  gap:6px;
+}
+
+/* Portrait = section mode */
+body.section-mode{
+  overflow:hidden;
+}
+
+body.section-mode .song-view{
+  height:calc(100vh - 140px);
+  overflow:hidden;
+}
+
+/* Show nav only in portrait */
+body.section-mode .section-nav{
+  display:flex;
+}
+
+.section-nav button{
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid var(--border-light);
+  background:transparent;
+  cursor:pointer;
+}
+
+/* Smooth section snap */
+.section-label{
+  scroll-margin-top:90px;
+}
 
 
