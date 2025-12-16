@@ -695,42 +695,96 @@ body.section-mode .section-nav{
   scroll-margin-top:90px;
 }
 
-/* ================= COMBINER ================= */
 
+/* =========================
+   LYRICS COMBINER — LAYOUT
+========================= */
+
+.combiner-page{
+  background: var(--bg);
+}
+
+/* Main 3-column layout */
 .combiner-layout{
-  display:grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap:24px;
-  max-width:1400px;
-  margin:24px auto;
-  padding:0 16px;
+  max-width: 1400px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 260px 1fr 1fr;
+  gap: 16px;
 }
 
-.combiner-editor{
-  border:1px solid var(--border-light);
-  border-radius:var(--radius);
-  padding:16px;
-  background:var(--surface);
-}
-
+/* Panels */
+.combiner-left,
+.combiner-editor,
 .combiner-preview{
-  border:1px solid var(--border-light);
-  border-radius:var(--radius);
-  padding:16px;
-  background:var(--surface);
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  min-height: 60vh;
 }
 
-#lyrics-editor textarea{
-  width:100%;
-  min-height:80px;
-  margin-bottom:12px;
-  font-size:1rem;
+/* Headings */
+.combiner-left h3,
+.combiner-editor h3,
+.combiner-preview h3{
+  margin: 0 0 12px;
+  font-size: .9rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* Mobile */
-@media (max-width: 768px){
+/* Dropdown */
+.combiner-select{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text);
+  font-size: .9rem;
+  margin-bottom: 12px;
+}
+
+/* Left section list placeholder */
+.combiner-sections{
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+/* Editor placeholder */
+.editor-placeholder{
+  height: 100%;
+  border: 2px dashed var(--border-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* Preview */
+.combiner-preview .song-view{
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* =========================
+   MOBILE BEHAVIOR
+========================= */
+@media (max-width: 900px){
   .combiner-layout{
-    grid-template-columns:1fr;
+    grid-template-columns: 1fr;
+  }
+
+  .combiner-left,
+  .combiner-editor,
+  .combiner-preview{
+    min-height: auto;
   }
 }
-
