@@ -1,165 +1,61 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Lyrics Combiner — Worship SPOT</title>
-
-<link rel="stylesheet" href="styles.css">
-<style>
-  .combiner-layout{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:20px;
-    margin-top:24px;
-  }
-
-  .panel-box{
-    border:1px solid var(--border-color);
-    border-radius:12px;
-    padding:16px;
-    background:var(--surface);
-  }
-
-  .section-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:8px 12px;
-    border:1px solid var(--border-light);
-    border-radius:8px;
-    margin-bottom:8px;
-  }
-
-  .section-item button{
-    padding:4px 10px;
-    border-radius:999px;
-    border:none;
-    cursor:pointer;
-    background:var(--accent1);
-    color:white;
-  }
-
-  .combined-section{
-    margin-bottom:16px;
-  }
-
-  .combined-section h4{
-    margin-bottom:6px;
-    font-size:.85rem;
-    color:var(--muted);
-    letter-spacing:.1em;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lyrics Combiner — Worship SPOT</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="view-everyone">
 
 <header class="viewer-header">
   <a href="index.html" class="back">← Back</a>
   <div class="viewer-title">Lyrics Combiner</div>
 </header>
 
-<main class="main">
+<main class="song-view">
 
-  <!-- SONG SELECTOR -->
-  <div class="panel-box">
-    <label><strong>Select Song</strong></label>
-    <select id="songSelect" style="width:100%;padding:10px;margin-top:8px;">
-      <option value="">-- Select a song --</option>
+  <!-- SECTION PICKER -->
+  <section class="panel">
+    <h3>Select Section</h3>
+
+    <select id="sectionType">
+      <option value="INTRO">Intro</option>
+      <option value="VERSE">Verse</option>
+      <option value="CHORUS">Chorus</option>
+      <option value="BRIDGE">Bridge</option>
+      <option value="TAG">Tag</option>
     </select>
-  </div>
 
-  <!-- COMBINER -->
-  <div class="combiner-layout">
+    <textarea
+      id="lyricsInput"
+      placeholder="Paste lyrics here (one line per row)"
+      rows="6"
+    ></textarea>
 
-    <!-- LEFT: SOURCE SECTIONS -->
-    <div class="panel-box">
-      <h3>Song Sections</h3>
-      <div id="sectionList"></div>
-    </div>
+    <button id="addSection">Add Section</button>
+  </section>
 
-    <!-- RIGHT: COMBINED SONG -->
-    <div class="panel-box">
-      <h3>Combined Song</h3>
-      <div id="combinedOutput"></div>
-    </div>
+  <!-- COMBINED OUTPUT -->
+  <section class="panel">
+    <h3>Combined Song</h3>
+    <div id="combinedOutput"></div>
+  </section>
 
-  </div>
+  <!-- ACTIONS -->
+  <section class="panel actions">
+    <button id="exportJson">Download JSON</button>
+    <button id="exportImage">Download Image</button>
+  </section>
 
 </main>
 
-<script type="module">
-import { fetchJSON } from './app.js'; // reuse logic if exported, else inline
+<footer class="footer">
+  <small>© 2025 Worship SPOT</small>
+</footer>
 
-let songs = [];
-let currentSong = null;
-let combined = [];
-
-async function init(){
-  songs = await fetch('songs.json').then(r=>r.json());
-  const select = document.getElementById('songSelect');
-
-  songs.forEach((s,i)=>{
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = s.title;
-    select.appendChild(opt);
-  });
-
-  select.onchange = () => loadSong(select.value);
-}
-
-function loadSong(index){
-  currentSong = songs[index];
-  combined = [];
-  renderSections();
-  renderCombined();
-}
-
-function renderSections(){
-  const box = document.getElementById('sectionList');
-  box.innerHTML = '';
-
-  currentSong.lines.forEach(line=>{
-    if(!line.section) return;
-
-    const div = document.createElement('div');
-    div.className = 'section-item';
-
-    div.innerHTML = `
-      <span>${line.section}</span>
-      <button>+</button>
-    `;
-
-    div.querySelector('button').onclick = ()=>{
-      combined.push(line);
-      renderCombined();
-    };
-
-    box.appendChild(div);
-  });
-}
-
-function renderCombined(){
-  const out = document.getElementById('combinedOutput');
-  out.innerHTML = '';
-
-  combined.forEach(block=>{
-    const sec = document.createElement('div');
-    sec.className = 'combined-section';
-
-    sec.innerHTML = `
-      <h4>${block.section}</h4>
-      <div>${block.lyrics.join(' ')}</div>
-    `;
-
-    out.appendChild(sec);
-  });
-}
-
-init();
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="combiner.js"></script>
 </body>
 </html>
