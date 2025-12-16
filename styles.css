@@ -788,3 +788,36 @@ body.section-mode .section-nav{
     min-height: auto;
   }
 }
+
+.panel {
+  margin: 16px 0;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.combined-section {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.remove-btn {
+  margin-top: 8px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
