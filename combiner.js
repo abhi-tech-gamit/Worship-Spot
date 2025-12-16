@@ -1,141 +1,74 @@
-// combiner.js — Lyrics Combiner (STEP 3)
+const combined = [];
 
-async function fetchJSON(path){
-  const res = await fetch(path);
-  if(!res.ok) throw new Error('Failed to load');
-  return res.json();
-}
+const sectionType = document.getElementById('sectionType');
+const lyricsInput = document.getElementById('lyricsInput');
+const combinedOutput = document.getElementById('combinedOutput');
 
-const selectEl = document.querySelector('.combiner-select');
-const sectionsEl = document.querySelector('.combiner-sections');
-const editorEl = document.querySelector('.combiner-editor');
-const previewEl = document.querySelector('.combiner-preview .song-view');
+document.getElementById('addSection').onclick = () => {
+  const text = lyricsInput.value.trim();
+  if (!text) return;
 
-let currentSong = null;
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
-/* =========================
-   INIT
-========================= */
-(async function init(){
-  const songs = await fetchJSON('songs.json');
-
-  songs.forEach(song=>{
-    const opt = document.createElement('option');
-    opt.value = song.filename;
-    opt.textContent = song.title;
-    selectEl.appendChild(opt);
+  combined.push({
+    section: sectionType.value,
+    lyrics: lines
   });
 
-  selectEl.addEventListener('change', loadSong);
-})();
+  lyricsInput.value = '';
+  renderCombined();
+};
 
-/* =========================
-   LOAD SONG
-========================= */
-async function loadSong(){
-  const file = selectEl.value;
-  if(!file) return;
+function renderCombined() {
+  combinedOutput.innerHTML = '';
 
-  currentSong = await fetchJSON(file);
-  renderSections();
-  renderEditor();
-  renderPreview();
-}
+  combined.forEach((block, index) => {
+    const div = document.createElement('div');
+    div.className = 'combined-section';
+    div.dataset.section = index;
 
-/* =========================
-   LEFT: SECTIONS
-========================= */
-function renderSections(){
-  sectionsEl.innerHTML = '';
+    div.innerHTML = `
+      <div class="section-label">${block.section}</div>
+      <div class="lyrics">${block.lyrics.join('<br>')}</div>
+      <button class="remove-btn">Remove</button>
+    `;
 
-  currentSong.lines.forEach((line, idx)=>{
-    if(!line.section) return;
-
-    const btn = document.createElement('button');
-    btn.textContent = line.section;
-    btn.className = 'small-btn';
-    btn.style.marginBottom = '6px';
-
-    btn.onclick = ()=>{
-      document
-        .querySelector(`[data-line="${idx}"]`)
-        ?.scrollIntoView({behavior:'smooth'});
+    div.querySelector('.remove-btn').onclick = () => {
+      combined.splice(index, 1);
+      renderCombined();
     };
 
-    sectionsEl.appendChild(btn);
+    combinedOutput.appendChild(div);
   });
 }
 
-/* =========================
-   CENTER: EDITOR
-========================= */
-function renderEditor(){
-  editorEl.innerHTML = '<h3>Editor</h3>';
+/* EXPORT JSON */
+document.getElementById('exportJson').onclick = () => {
+  const output = {
+    title: 'Combined Worship Song',
+    lines: combined.map(b => ({
+      section: b.section,
+      lyrics: b.lyrics,
+      chords: []
+    }))
+  };
 
-  currentSong.lines.forEach((line, idx)=>{
-    const block = document.createElement('div');
-    block.dataset.line = idx;
-    block.style.marginBottom = '16px';
-
-    if(line.section){
-      const label = document.createElement('div');
-      label.className = 'section-label';
-      label.textContent = line.section;
-      block.appendChild(label);
-    }
-
-    line.lyrics.forEach((word, wIdx)=>{
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = word;
-      input.style.width = '100%';
-      input.style.marginBottom = '6px';
-
-      input.oninput = ()=>{
-        line.lyrics[wIdx] = input.value;
-        renderPreview();
-      };
-
-      block.appendChild(input);
-    });
-
-    editorEl.appendChild(block);
+  const blob = new Blob([JSON.stringify(output, null, 2)], {
+    type: 'application/json'
   });
-}
 
-/* =========================
-   RIGHT: PREVIEW
-========================= */
-function renderPreview(){
-  previewEl.innerHTML = '';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'combined-song.json';
+  a.click();
+};
 
-  currentSong.lines.forEach(line=>{
-    if(line.section){
-      const s = document.createElement('div');
-      s.className = 'section-label';
-      s.textContent = line.section;
-      previewEl.appendChild(s);
-    }
-
-    const row = document.createElement('div');
-    row.className = 'lyric-line';
-
-    const wrap = document.createElement('div');
-    wrap.className = 'lyric-pairs';
-
-    line.lyrics.forEach((word,i)=>{
-      const pair = document.createElement('div');
-      pair.className = 'lyric-pair';
-
-      const w = document.createElement('div');
-      w.className = 'word';
-      w.textContent = word;
-
-      pair.appendChild(w);
-      wrap.appendChild(pair);
-    });
-
-    row.appendChild(wrap);
-    previewEl.appendChild(row);
+/* EXPORT IMAGE */
+document.getElementById('exportImage').onclick = () => {
+  html2canvas(combinedOutput, { scale: 2 }).then(canvas => {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'combined-song.png';
+    a.click();
   });
-}
+};
