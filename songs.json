@@ -50,4 +50,12 @@
   "language": "hi",
   "key": "Bb"
 }
+ {
+  "title": "Hai di Awaz ",
+  "artist": "Unknown",
+  "filename": "songs/HAI DI.json",
+  "tags": ["worship", "hindi", "victory"],
+  "language": "hi",
+  "key": "A"
+ } 
 ]
