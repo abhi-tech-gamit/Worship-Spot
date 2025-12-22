@@ -3,12 +3,17 @@ const combined = [];
 const sectionType = document.getElementById('sectionType');
 const lyricsInput = document.getElementById('lyricsInput');
 const combinedOutput = document.getElementById('combinedOutput');
+const exportOnly = document.getElementById('exportOnly');
 
+/* ADD SECTION */
 document.getElementById('addSection').onclick = () => {
   const text = lyricsInput.value.trim();
   if (!text) return;
 
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const lines = text
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean);
 
   combined.push({
     section: sectionType.value,
@@ -19,13 +24,13 @@ document.getElementById('addSection').onclick = () => {
   renderCombined();
 };
 
+/* RENDER PREVIEW */
 function renderCombined() {
   combinedOutput.innerHTML = '';
 
   combined.forEach((block, index) => {
     const div = document.createElement('div');
     div.className = 'combined-section';
-    div.dataset.section = index;
 
     div.innerHTML = `
       <div class="section-label">${block.section}</div>
@@ -63,12 +68,50 @@ document.getElementById('exportJson').onclick = () => {
   a.click();
 };
 
-/* EXPORT IMAGE */
+/* BUILD EXPORT CONTENT (TEXT ONLY) */
+function renderExportContent() {
+  exportOnly.innerHTML = '';
+
+  combined.forEach(block => {
+    const section = document.createElement('div');
+    section.style.marginBottom = '48px';
+
+    section.innerHTML = `
+      <div style="
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+      ">
+        ${block.section}
+      </div>
+
+      <div style="
+        font-size: 20px;
+        white-space: pre-line;
+      ">
+        ${block.lyrics.join('\n')}
+      </div>
+    `;
+
+    exportOnly.appendChild(section);
+  });
+}
+
+/* EXPORT IMAGE (WRITTEN CONTENT ONLY) */
 document.getElementById('exportImage').onclick = () => {
-  html2canvas(combinedOutput, { scale: 2 }).then(canvas => {
+  if (!combined.length) return;
+
+  renderExportContent();
+
+  html2canvas(exportOnly, {
+    scale: 3,
+    backgroundColor: '#ffffff'
+  }).then(canvas => {
     const a = document.createElement('a');
     a.href = canvas.toDataURL('image/png');
-    a.download = 'combined-song.png';
+    a.download = 'lyrics-only.png';
     a.click();
   });
 };
