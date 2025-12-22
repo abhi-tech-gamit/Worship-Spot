@@ -1,0 +1,77 @@
+{
+  "title": "Hai Di Aawaz-hi",
+  "artist": "Unknown",
+  "language": "hi",
+  "key": "A",
+  "lines": [
+    {
+      "section": "VERSE 1",
+      "chords": ["A", "", "", "", "", "", "", "D",""],
+      "lyrics": ["Hai", "di", "aawaz", "farishto", "ne", "zami", "ke", "logo", "ko"]
+    },
+    {
+      "chords": ["A", "", "", "E", "", "D", "E", "A"],
+      "lyrics": ["Uter", "aaya", "jaha", "mai", "ab", "khuda", "insaan", "banke"]
+    },
+    {
+      "chords": ["","","A"],
+      "lyrics": ["Hai", "di", "aawaz"]
+    },
+
+    {
+      "section": "CHORUS",
+      "chords": ["Bm", "", "E"],
+      "lyrics": ["Yeshu", "hai", "uska", "naam"]
+    },
+    {
+      "chords": ["A", "D", "E"],
+      "lyrics": ["To", "karo", "jai", "jaikar"]
+    },
+
+    {
+      "section": "VERSE 2",
+      "chords": ["A", "", "", "", "", "", "Bm"],
+      "lyrics": ["Wo", "aaya", "hai", "gunah", "ki", "kaid", "se", "aazad", "karne", "ko"]
+    },
+    {
+      "chords": ["E", "", "", "", "D", "", "A"],
+      "lyrics": ["Jo", "ujde", "zindagi", "ke", "baag", "unhe", "aabad", "karne", "ko"]
+    },
+    {
+      "chords": ["", "", "", "", "", "D"],
+      "lyrics": ["Na", "ho", "mayus", "khuda", "aaya", "umeedo", "ka", "jaha", "banke"]
+    },
+    {
+      "chords": ["A", "", "E", "", "D", "E", "A"],
+      "lyrics": ["Uter", "aaya", "jaha", "mai", "ab", "khuda", "insaan", "banke"]
+    },
+
+    {
+      "section": "BRIDGE",
+      "chords": [],
+      "lyrics": ["Jo", "baithe", "hai", "andhero", "mai", "wo", "aaye", "roshni", "lele"]
+    },
+    {
+      "chords": [],
+      "lyrics": ["Gamo", "mai", "rehne", "wale", "zindagi", "ki", "her", "khushi", "lele"]
+    },
+    {
+      "chords": [],
+      "lyrics": ["Wo", "aaya", "hai", "khuda", "insaan", "mehrbaan", "banke"]
+    },
+
+    {
+      "section": "OUTRO",
+      "chords": [],
+      "lyrics": ["Hamare", "waste", "wo", "aasmani", "pyar", "laya", "hai"]
+    },
+    {
+      "chords": [],
+      "lyrics": ["Naya", "jeewa", "naye", "rahe", "naya", "sansaar", "laya", "hai"]
+    },
+    {
+      "chords": [],
+      "lyrics": ["Kabhi", "jo", "khatm", "na", "ho", "aaya", "aisi", "dastaan", "banke"]
+    }
+  ]
+}
